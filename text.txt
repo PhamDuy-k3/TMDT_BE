@@ -1,0 +1,117 @@
+// RESTful API
+// CRUD
+
+Quan ly user
+// Tao moi user
+POST - /users
+// Danh sach user
+GET - /users
+// Chi tiet user
+GET - /users/{userId}
+// Update user
+PUT/PATCH - /users/{userId}
+// Delete user
+DELETE - /users/{userId}
+
+
+- src // Chứa các logic chính trong ứng dụng
+    - controllers // Các class định nghĩa các function handler chính
+    - middlewares // Định nghĩa các middleware function 
+    - models // Các đối tượng được mô hình hoá (modeling) từ các collection/table trong DB
+    - services // Các class định nghĩa các function xử lý logic 
+    - commons
+        - helpers // chứa các function hỗ trợ trong ứng dụng
+        - constants // chứa các constant trong ứng dụng
+-routers // chứa các route trong ứng dụng
+- storage // chứa các file: images
+- config // cấu hình hệ thống
+    - database // các cấu hình liên quan DB
+- index.js // Khai báo instance của express, setup server
+- package.json // cấu hình ứng dụng
+
+
+// Xây dựng 1 ứng dụng BE cung cấp các JSON APIs cho web bán hàng
+
+B1: Init project
+    => install packages
+    => Setup server
+    => Kiến trúc project
+    => init git
+B2: Phát triển các module tính năng
+    => Phát triển Module
+        => Quản lý users (CRUD)
+            - Thêm (C)
+                - API: POST /users
+            - Danh sách (filter, phân trang) (R)
+                - API: GET /users
+            - Chi tiết (R)
+                - API: GET /users/{userId}
+            - Cập nhật (U)
+                - API: PUT /users/{userId}
+            - Xoá (D)
+                - API: DELETE /users/{userId}
+            - Import danh sách user (C)
+                - API: POST /users/import
+            - Export danh sách user (R)
+                - API: GET /users/export
+        => Login
+            - API: POST /admins/login (R)
+        => Profile
+            - Chi tiết
+                - API: GET /profiles (R)
+            - Cập nhật 
+                - API: PUT /profiles (U)
+            - Thay đổi password
+                - API: PUT /profiles/password (U)
+    => Thiết kế DB
+        => users: 
+            name - string, max 255, min 1, required
+            phone - string, max 11, min 9, required, unique
+            email - string, max 255, min 1, required, fomat email, unique
+            gender - number (1 - male, 2 - female), required
+            password - string, required
+            avatar - string
+            role - number (1 - admin, 2 - users)
+
+
+- Them moi users
+    - Dinh nghia route
+    - Dinh nghia co ban handler function trong controllers
+    - Dinh nghia co ban 1 middleware validate data input
+    - Xay dung chi tiet middleware validate
+    - Xay dung chi tiet handle function trong controllers
+        - Xu ly input data
+        - Luu vao collection users trong database
+            - Tao 1 model user tuong ung voi collection users trong database trong truong hop chua co
+        - Response data 
+            - Loi: response Loi
+            - Thanh cong thi se response user vua them moi
+- Chi tiết user
+    - API: GET /users/{id}
+    - Logic
+        - Dựa vào id trên url sẽ thực hiện truy vấn DB
+- Xoa user  
+    - API: DELETE /users/{id}
+    - Logic 
+        - Tim user theo id va xoa
+- Danh sách user
+    - API: GET /users
+    - Logic:
+        - Hiển thị 10 phần tử trên 1 trang
+        - Có phân trang
+        - Có filter theo: name, gender, level
+    - Thuật toán phân trang
+        - VD: Trong DB có 31 users
+            => Page 1: 1 - 10 => Bỏ qua 0 phần tử (Bỏ qua - offset)
+            => Page 2: 11 - 20 => Bỏ qua 10 phần tử
+            => Page 3: 21 - 30 => Bỏ qua 20 phần tử
+            => Page 4: 31 => Bỏ qua 30 phần tử
+        - Chi tiết: 
+            -- 4 giá trị:
+                --- limit: số lượng phần tử được hiển thị trên 1 trang, vd: 10
+                --- page: Số thứ tự page muốn hiển thị, vd: 1, 2, 3, 4
+                --- offset: Số lượng phần tử bỏ qua, vd: 0, 10, 20, 30
+                    ---- offset = (page - 1) * limit
+                --- count: tổng số lượng phần tử trong DB, vd: 31
+            -- limit và page sẽ do FE gửi tới => tính được offset
+            -- count thì sẽ count trong db (hoặc 1 nguồn nào đó)
