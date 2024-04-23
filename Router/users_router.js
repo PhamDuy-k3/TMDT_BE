@@ -9,7 +9,7 @@ export const userRouter = (app) => {
   const router = express.Router();
   const userController = new UserController();
 
-  router.use(AuthMiddleware);
+  //router.use(AuthMiddleware);
 
   router.post(
     "/",
@@ -18,7 +18,12 @@ export const userRouter = (app) => {
     userController.create
   );
   router.get("/:userId", userController.show);
-  router.put("/:userId", UpdateUserMiddleware, userController.update);
+  router.put(
+    "/:userId",
+    uploadImage.single("avatar"),
+    UpdateUserMiddleware,
+    userController.update
+  );
   router.delete("/:userId", userController.delete);
   //danh sách user
   router.get("/", userController.index);

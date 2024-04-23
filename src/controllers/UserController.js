@@ -7,14 +7,18 @@ export default class UserController {
       const data = req.body;
       const file = req.file;
       data.avatar = file.filename;
-      data.password = hashString("123456789");
+      data.password = hashString(data.password);
 
       // thực hiện thêm mới user
       const userServices = new UserService();
 
       const user = await userServices.store(data);
 
-      res.json(user);
+      res.json({
+        data: user,
+        status_code: 200,
+        errors: [],
+      });
     } catch (error) {
       res.json(error);
     }
@@ -24,7 +28,9 @@ export default class UserController {
       const { userId } = req.params;
       const userServices = new UserService();
       const user = await userServices.getById(userId);
-      res.json(user);
+      res.json({
+        data: user,
+      });
     } catch (error) {
       res.json(error);
     }
@@ -37,7 +43,10 @@ export default class UserController {
       const userServices = new UserService();
       const userUpdate = await userServices.update(userId, data);
 
-      res.json(userUpdate);
+      res.json({
+        data: userUpdate,
+        status_code: 200,
+      });
     } catch (error) {
       res.json({
         error: {
@@ -53,7 +62,10 @@ export default class UserController {
 
       const result = await userServices.delete(userId);
 
-      res.json(result);
+      res.json({
+        status_code: 200,
+        data: result,
+      });
     } catch (error) {
       res.json({
         error: {

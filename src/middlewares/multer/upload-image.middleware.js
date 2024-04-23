@@ -2,7 +2,7 @@ import multer from "multer";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, process.cwd() + "/storage"); //process.cwd() lấy đường dẫn  đến thư mục
+    cb(null, process.cwd() + "/storage/user"); //process.cwd() lấy đường dẫn  đến thư mục
   }, //nơi luu tru
   filename: function (req, file, cb) {
     // tạo file name mới cho ảnh để ko bị ghi đè

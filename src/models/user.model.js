@@ -22,6 +22,21 @@ const userModel = mongoose.Schema(
     password: {
       type: String,
     },
+    birthday: {
+      type: Date,
+    },
+    address: {
+      type: String,
+    },
+    province_id: {
+      type: mongoose.Schema.Types.Mixed, // Chấp nhận cả kiểu dữ liệu chuỗi và số
+    },
+    district_id: {
+      type: mongoose.Schema.Types.Mixed,
+    },
+    town_id: {
+      type: mongoose.Schema.Types.Mixed,
+    },
     avatar: {
       type: String,
       get: function (avatar) {

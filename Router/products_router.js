@@ -15,6 +15,7 @@ export const productRouter = (app) => {
   );
   router.get("/", productController.index);
   router.get("/:productId", productController.show);
+  router.delete("/:productId", productController.delete);
   router.get("/:productId", UpdateProductMiddleware, productController.update);
   app.use("/products", router);
 };

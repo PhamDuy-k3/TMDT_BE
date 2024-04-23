@@ -30,26 +30,31 @@ export class UserService {
     return await userModel.findByIdAndDelete(userId);
   }
   async getWithPaginate(limit, page, params) {
-    //count: số lượng phần tử của database
-    const { name, gender, level } = params;
+    const { name, gender, level, phone } = params;
     const offset = (page - 1) * limit;
-    const conditions = {}; // chưa các tham số lọc
+    const conditions = {}; // Chứa các tham số lọc
+
     if (name) {
-      conditions.name = new RegExp(`${name}`); // d ->duy , dung  lọc tương quan
+      conditions.name = new RegExp(`${name}`, "i"); // Lọc theo tên, không phân biệt chữ hoa và chữ thường
     }
     if (gender) {
-      conditions.gender = gender; // lọc chính xác
+      conditions.gender = gender; // Lọc chính xác theo giới tính
     }
     if (level) {
-      conditions.level = level; // lọc chính xác
+      conditions.level = level; // Lọc chính xác theo level
     }
-    // chưa các tác vụ bất đồng bộ , dùng như này tăng hiệu suất
+    if (phone) {
+      conditions.phone = new RegExp(phone);
+    }
+    console.log(conditions);
+    // Chạy các tác vụ bất đồng bộ cùng một lúc để tăng hiệu suất
     const [count, users] = await Promise.all([
       userModel.countDocuments(conditions),
       userModel.find(conditions).limit(limit).skip(offset),
     ]);
+
     const pagination = Math.ceil(count / limit);
-    // truy xuất số lượng phần tử dựa trên limit và offset
+
     return {
       data: users,
       count,

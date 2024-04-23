@@ -24,7 +24,6 @@ export default async function AuthMiddleware(req, res, next) {
     });
     return;
   }
-
   const signatureHashed = crypto
     .createHmac(header.alg, "example")
     .update(headerBase64 + "." + payloadBase64)

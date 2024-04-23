@@ -10,7 +10,8 @@ connect();
 
 router(app);
 
-app.use(express.static("storage"));
+app.use(express.static("storage/user"));
+
 //khởi tạo server
 app.listen(5050, () => {
   console.log("sever listening on port 3000");

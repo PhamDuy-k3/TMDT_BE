@@ -8,7 +8,12 @@ export default class BrandController {
       data.logo = file.filename;
       const brands = await brandsModel.create(data);
       res.json(brands);
-    } catch (error) {}
-    res.json(error);
+    } catch (error) {
+      res.json({
+        error: {
+          message: error.message,
+        },
+      });
+    }
   }
 }

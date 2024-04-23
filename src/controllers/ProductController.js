@@ -7,16 +7,39 @@ export default class ProductController {
       const file = req.file;
       data.image = file.filename;
       const product = await productModel.create(data);
-      res.json(product);
+      res.json({
+        data: product,
+        status_code: 200,
+        errors: [],
+      });
     } catch (error) {
       res.json(error);
+    }
+  }
+  async delete(req, res) {
+    try {
+      const { productId } = req.params;
+      const result = await productModel.findByIdAndDelete(productId);
+
+      res.json({
+        status_code: 200,
+        data: result,
+      });
+    } catch (error) {
+      res.json({
+        error: {
+          message: error.message,
+        },
+      });
     }
   }
   async show(req, res) {
     try {
       const { productId } = req.params;
       const product = await productModel.findById(productId);
-      res.json(product);
+      res.json({
+        data: product,
+      });
     } catch (error) {
       res.json(error);
     }
@@ -26,7 +49,7 @@ export default class ProductController {
     try {
       const data = req.body;
       const { productId } = req.params;
-      const product = await productModel.findById(userId);
+      const product = await productModel.findById(productId);
       if (!product) {
         throw new Error("Product ko tồn tại");
       }
