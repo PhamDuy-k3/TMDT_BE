@@ -21,7 +21,9 @@ const productModel = mongoose.Schema(
     image: {
       type: String,
       get: function (image) {
-        return "http://localhost:5050/" + image;
+        if (image) {
+          return "http://localhost:5050/" + image;
+        }
       },
     },
   },

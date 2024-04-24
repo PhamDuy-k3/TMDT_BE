@@ -14,8 +14,17 @@ export const productRouter = (app) => {
     productController.create
   );
   router.get("/", productController.index);
+
   router.get("/:productId", productController.show);
+
   router.delete("/:productId", productController.delete);
-  router.get("/:productId", UpdateProductMiddleware, productController.update);
+
+  router.put(
+    "/:productId",
+    uploadImage.single("image"),
+    UpdateProductMiddleware,
+    productController.update
+  );
+
   app.use("/products", router);
 };

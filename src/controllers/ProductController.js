@@ -5,7 +5,10 @@ export default class ProductController {
     try {
       const data = req.body;
       const file = req.file;
-      data.image = file.filename;
+      if (file) {
+        data.image = file.filename;
+      }
+
       const product = await productModel.create(data);
       res.json({
         data: product,
@@ -53,9 +56,9 @@ export default class ProductController {
       if (!product) {
         throw new Error("Product ko tồn tại");
       }
-      if (product.name === data.name) {
-        delete data.name;
-      }
+      // if (product.name === data.name) {
+      //   delete data.name;
+      // }
       const productUpdate = await productModel.findByIdAndUpdate(
         productId,
         data,
@@ -63,7 +66,10 @@ export default class ProductController {
           new: true,
         }
       );
-      res.json(productUpdate);
+      res.json({
+        data: productUpdate,
+        status_code: 200,
+      });
     } catch (error) {
       res.json({
         error: {
@@ -74,13 +80,15 @@ export default class ProductController {
   }
   async index(req, res) {
     try {
-      const { limit = 2, page = 1, name } = req.query;
+      const { limit = 2, page = 1, name, prices } = req.query;
       const offset = (page - 1) * limit;
       const conditions = {}; // chưa các tham số lọc
       if (name) {
         conditions.name = new RegExp(`${name}`, "i"); // "i" để không phân biệt chữ hoa chữ thường
       }
-      console.log(name);
+      if (prices) {
+        conditions.prices = { $gte: parseInt(prices) }; // Tìm sản phẩm có giá lớn hơn or = giá nhập vào
+      }
       // chưa các tác vụ bất đồng bộ , dùng như này tăng hiệu suất
       const [count, products] = await Promise.all([
         productModel.countDocuments(conditions),

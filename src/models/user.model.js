@@ -40,7 +40,9 @@ const userModel = mongoose.Schema(
     avatar: {
       type: String,
       get: function (avatar) {
-        return "http://localhost:5050/" + avatar;
+        if (avatar) {
+          return "http://localhost:5050/" + avatar;
+        }
       },
     },
   },

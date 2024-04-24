@@ -2,6 +2,7 @@ import userModel from "../models/user.model.js";
 
 export class UserService {
   async store(user) {
+    console.log(user);
     return await userModel.create(user);
   }
   async getById(userId) {
@@ -21,6 +22,7 @@ export class UserService {
     if (user.phone === data.phone) {
       delete data.phone;
     }
+    //console.log("data", data);
     const userUpdate = await userModel.findByIdAndUpdate(userId, data, {
       new: true,
     });
@@ -46,7 +48,6 @@ export class UserService {
     if (phone) {
       conditions.phone = new RegExp(phone);
     }
-    console.log(conditions);
     // Chạy các tác vụ bất đồng bộ cùng một lúc để tăng hiệu suất
     const [count, users] = await Promise.all([
       userModel.countDocuments(conditions),

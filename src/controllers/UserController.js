@@ -6,14 +6,16 @@ export default class UserController {
     try {
       const data = req.body;
       const file = req.file;
-      data.avatar = file.filename;
+      if (file) {
+        data.avatar = file.filename;
+      }
       data.password = hashString(data.password);
 
       // thực hiện thêm mới user
+      console.log(data);
       const userServices = new UserService();
-
+      console.log(data);
       const user = await userServices.store(data);
-
       res.json({
         data: user,
         status_code: 200,
