@@ -21,6 +21,7 @@ export default class AuthController {
 
       res.json({
         user_token: generateToken({ id: user._id }),
+        name_user: user.name,
       });
     } catch (error) {
       res.json({
