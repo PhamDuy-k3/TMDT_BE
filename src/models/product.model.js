@@ -13,10 +13,10 @@ const productModel = mongoose.Schema(
       type: Number,
     },
     category_id: {
-      type: Number,
+      type: String,
     },
     brand_id: {
-      type: Number,
+      type: String,
     },
     image: {
       type: String,

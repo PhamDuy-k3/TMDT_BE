@@ -14,10 +14,10 @@ export default function UpdateProductMiddleware(req, res, next) {
       "string.max": "Discount không được vượt quá {{#limit}} ký tự.",
       "string.min": "Discount không được thấp hơn {{#limit}} ký tự."
     }),
-    category_id: Joi.number().messages({
+    category_id: Joi.string().messages({
       "number.base": "category_id là 1 số."
     }),
-    brand_id: Joi.number().messages({
+    brand_id: Joi.string().messages({
       "number.base": "brand_id là 1 số."
     }),
   });

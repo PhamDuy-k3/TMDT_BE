@@ -16,4 +16,18 @@ export default class BrandController {
       });
     }
   }
+  async index(req, res) {
+    try {
+      const brands = await brandsModel.find({});
+      res.json({
+        data: brands,
+      });
+    } catch (error) {
+      res.json({
+        error: {
+          message: error.message,
+        },
+      });
+    }
+  }
 }

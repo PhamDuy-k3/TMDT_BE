@@ -11,4 +11,19 @@ export default class CategoriesController {
       res.json(error);
     }
   }
+  async index(req, res) {
+    try {
+      
+      const categories = await categoriesModel.find({});
+      res.json({
+        data: categories,
+      });
+    } catch (error) {
+      res.json({
+        error: {
+          message: error.message,
+        },
+      });
+    }
+  }
 }
