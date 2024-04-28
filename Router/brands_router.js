@@ -15,6 +15,7 @@ export const brandsRouter = (app) => {
     CreateBrandsMiddleware,
     brandsController.create
   );
+  router.get("/:brandId", brandsController.show);
   router.get("/", brandsController.index);
   app.use("/brands", router);
 };

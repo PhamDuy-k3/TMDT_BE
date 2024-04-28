@@ -7,7 +7,13 @@ export const categoriesRouter = (app) => {
 
   const categoriesController = new CategoriesController();
 
-  router.post("/", uploadImage.single("image"), CreateCategoriesMiddleware, categoriesController.create);
-  router.get('/',categoriesController.index)
+  router.post(
+    "/",
+    uploadImage.single("image"),
+    CreateCategoriesMiddleware,
+    categoriesController.create
+  );
+  router.get("/", categoriesController.index);
+  router.get("/:categorieId", categoriesController.show);
   app.use("/categories", router);
 };
