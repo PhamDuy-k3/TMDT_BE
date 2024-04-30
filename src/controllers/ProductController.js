@@ -80,7 +80,7 @@ export default class ProductController {
   }
   async index(req, res) {
     try {
-      const { limit = 2, page = 1, name, prices } = req.query;
+      const { limit = 2, page = 1, name, prices, category_id } = req.query;
       const offset = (page - 1) * limit;
       const conditions = {}; // chưa các tham số lọc
       if (name) {
@@ -88,6 +88,9 @@ export default class ProductController {
       }
       if (prices) {
         conditions.prices = { $gte: parseInt(prices) }; // Tìm sản phẩm có giá lớn hơn or = giá nhập vào
+      }
+      if (category_id) {
+        conditions.category_id = category_id;
       }
       // chưa các tác vụ bất đồng bộ , dùng như này tăng hiệu suất
       const [count, products] = await Promise.all([

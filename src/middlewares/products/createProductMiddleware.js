@@ -1,6 +1,7 @@
 import Joi from "joi";
 export default function CreateProductMiddleware(req, res, next) {
   const data = req.body; // lấy dũ liệu từ người dùng gửi lên
+  console.log(data)
   const schema = Joi.object({
     name: Joi.string().max(255).required().messages({
       "string.base": "Tên SP là 1 chuỗi.",
