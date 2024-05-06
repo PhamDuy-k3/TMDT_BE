@@ -51,6 +51,11 @@ export default class ProductController {
   async update(req, res) {
     try {
       const data = req.body;
+      const file = req.file;
+      if (file) {
+        data.image = file.filename;
+      }
+      
       const { productId } = req.params;
       const product = await productModel.findById(productId);
       if (!product) {

@@ -1,4 +1,5 @@
 import multer from "multer";
+//LÀ MỘT MIDDLEWARE CHO FILE
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

@@ -41,7 +41,10 @@ export default class UserController {
     try {
       const data = req.body;
       const { userId } = req.params;
-
+      const file = req.file;
+      if (file) {
+        data.avatar = file.filename;
+      }
       const userServices = new UserService();
       const userUpdate = await userServices.update(userId, data);
 
