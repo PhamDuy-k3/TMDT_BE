@@ -12,9 +12,7 @@ export default class UserController {
       data.password = hashString(data.password);
 
       // thực hiện thêm mới user
-      console.log(data);
       const userServices = new UserService();
-      console.log(data);
       const user = await userServices.store(data);
       res.json({
         data: user,
