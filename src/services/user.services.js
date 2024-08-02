@@ -2,7 +2,6 @@ import userModel from "../models/user.model.js";
 
 export class UserService {
   async store(user) {
-    console.log(user);
     return await userModel.create(user);
   }
   async getById(userId) {

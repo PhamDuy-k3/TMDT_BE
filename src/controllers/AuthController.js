@@ -22,6 +22,7 @@ export default class AuthController {
       res.json({
         user_token: generateToken({ id: user._id }),
         phone_user: user.phone,
+        id_user: user._id,
       });
     } catch (error) {
       res.json({
