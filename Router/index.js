@@ -5,6 +5,9 @@ import { brandsRouter } from "./brands_router.js";
 import { authRouter } from "./auth.router.js";
 import { cartRouter } from "./cart.router.js";
 import { cartOderRouter } from "./cartOder.router.js";
+import { discountcodeRouter } from "./discountcode_router.js";
+import { commentRouter } from "./comment_router.js";
+import { paymentRouter } from "./payment_router.js";
 export const router = (app) => {
   userRouter(app);
   productRouter(app);
@@ -13,4 +16,7 @@ export const router = (app) => {
   authRouter(app);
   cartRouter(app);
   cartOderRouter(app);
+  discountcodeRouter(app);
+  commentRouter(app);
+  paymentRouter(app);
 };

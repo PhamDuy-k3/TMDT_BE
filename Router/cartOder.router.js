@@ -8,5 +8,7 @@ export const cartOderRouter = (app) => {
   router.post("/", cartOderController.create);
   router.get("/", cartOderController.index);
 
+  router.put("/:cartOrderId", cartOderController.update);
+
   app.use("/cartsOder", router);
 };

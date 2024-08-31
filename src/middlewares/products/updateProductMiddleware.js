@@ -9,6 +9,10 @@ export default function UpdateProductMiddleware(req, res, next) {
     prices: Joi.number().messages({
       "string.base": "Price là 1 số.",
     }),
+    stock: Joi.number().required().messages({
+      "string.base": "stock là 1 số.",
+      "any.required": "Vui lòng nhập tổng số lượng sản phẩm.",
+    }),
     discount: Joi.number().min(0).max(100).messages({
       "string.base": "Discount là 1 số.",
       "string.max": "Discount không được vượt quá {{#limit}} ký tự.",

@@ -31,5 +31,6 @@ export const generateToken = (
     .update(headerBase64 + "." + payloadBase64)
     .digest("hex");
 
+  //trả vê token
   return `${headerBase64}.${payloadBase64}.${signature}`;
 };

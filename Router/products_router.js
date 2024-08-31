@@ -6,7 +6,7 @@ import { uploadImage } from "../src/middlewares/multer/upload-image.middleware.j
 export const productRouter = (app) => {
   const router = express.Router();
   const productController = new ProductController();
-    
+
   router.post(
     "/",
     uploadImage.single("image"),
@@ -24,6 +24,14 @@ export const productRouter = (app) => {
     uploadImage.single("image"),
     UpdateProductMiddleware,
     productController.update
+  );
+  router.put(
+    "/increaseLike/:productId/:userId",
+    productController.updateIncreaseLike
+  );
+  router.put(
+    "/decreaseLike/:productId/:userId",
+    productController.updateDecreaseLike
   );
 
   app.use("/products", router);

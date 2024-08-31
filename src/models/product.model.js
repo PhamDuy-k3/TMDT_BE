@@ -18,6 +18,15 @@ const productModel = mongoose.Schema(
     brand_id: {
       type: String,
     },
+    likedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+      },
+    ],
+    stock: {
+      type: Number,
+      required: true,
+    },
     image: {
       type: String,
       get: function (image) {

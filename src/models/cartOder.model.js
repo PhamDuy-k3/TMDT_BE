@@ -6,14 +6,33 @@ const cartOderModel = mongoose.Schema({
     required: true,
   },
   status: {
-    type: Boolean,
+    type: String,
+    enum: ["unconfirmed", "confirmed", "delivered"],
     required: true,
-    default: false,
+    default: "unconfirmed",
   },
   id_user_oder: {
     type: String,
     required: true,
   },
+  total_prices: {
+    type: Number,
+    required: true,
+  },
+  note: {
+    type: String,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  confirmedAt: {
+    type: Date,
+  },
+  // address: {
+  //   type: String,
+  //   require: true,
+  // },
 });
 
 export default mongoose.model("CartOder", cartOderModel, "cartsOder");

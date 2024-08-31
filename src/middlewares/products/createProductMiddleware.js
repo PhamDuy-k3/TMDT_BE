@@ -9,7 +9,11 @@ export default function CreateProductMiddleware(req, res, next) {
     }),
     prices: Joi.number().required().messages({
       "string.base": "Price là 1 số.",
-      "any.required": "Vui lòng nhập số điện thoại của bạn.",
+      "any.required": "Vui lòng nhập giá sản phẩm.",
+    }),
+    stock: Joi.number().required().messages({
+      "string.base": "stock là 1 số.",
+      "any.required": "Vui lòng nhập tổng số lượng sản phẩm.",
     }),
     discount: Joi.number().min(0).max(100).required().messages({
       "string.base": "Discount là 1 số.",
