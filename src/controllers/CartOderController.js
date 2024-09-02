@@ -1,44 +1,56 @@
 import cartOderModel from "../models/cartOder.model.js";
+import sendOrderConfirmationGmail from "../utils/orderGmail.js";
+import crypto from "node:crypto";
+
+const confirmationTokens = {};
 
 export default class CartOderController {
   async create(req, res) {
     try {
       const data = req.body;
       const cart = await cartOderModel.create(data);
-      res.json({
+      res.status(201).json({
         data: cart,
-        status_code: 200,
+        status_code: 201,
         errors: [],
       });
     } catch (error) {
-      res.json(error);
+      console.error("Error creating cart order:", error);
+      res.status(500).json({
+        error: {
+          message: error.message,
+        },
+      });
     }
   }
+
   async update(req, res) {
     try {
       const data = req.body;
       const { cartOrderId } = req.params;
-      console.log(cartOrderId);
       const cartOrder = await cartOderModel.findById(cartOrderId);
 
       if (!cartOrder) {
-        throw new Error("Đơn hàng trong giỏ hàng không tồn tại");
+        return res.status(404).json({
+          error: {
+            message: "Đơn hàng trong giỏ hàng không tồn tại",
+          },
+        });
       }
 
       const cartOrderUpdate = await cartOderModel.findByIdAndUpdate(
         cartOrderId,
         data,
-        {
-          new: true,
-        }
+        { new: true }
       );
 
-      res.json({
+      res.status(200).json({
         data: cartOrderUpdate,
         status_code: 200,
       });
     } catch (error) {
-      res.json({
+      console.error("Error updating cart order:", error);
+      res.status(500).json({
         error: {
           message: error.message,
         },
@@ -71,26 +83,34 @@ export default class CartOderController {
           $lte: new Date(startDate).setHours(23, 59, 59, 999),
         };
       }
-      // lọc theo tháng
-
-      // if (startDate) {
-      //   const startOfMonth = new Date(startDate);
-      //   startOfMonth.setDate(1); // Đặt ngày thành ngày 1 của tháng
-      //   startOfMonth.setHours(0, 0, 0, 0); // Đặt thời gian về đầu ngày
-
-      //   const startOfNextMonth = new Date(startOfMonth);
-      //   startOfNextMonth.setMonth(startOfNextMonth.getMonth() + 1); // Chuyển sang tháng tiếp theo
-
-      //   conditions.confirmedAt = {
-      //     $gte: startOfMonth,
-      //     $lt: startOfNextMonth,
-      //   };
-      // }
 
       const carts = await cartOderModel.find(conditions);
-      res.json({ data: carts });
+      res.status(200).json({ data: carts, status_code: 200 });
     } catch (error) {
-      res.status(500).json({ error: { message: error.message } });
+      console.error("Error fetching cart orders:", error);
+      res.status(500).json({
+        error: {
+          message: error.message,
+        },
+      });
+    }
+  }
+
+  async sendOrderInformationViaGmail(req, res) {
+    const orderDetails = req.body;
+    // Gửi email xác nhận
+    try {
+      await sendOrderConfirmationGmail(orderDetails.gmail, orderDetails);
+      res
+        .status(200)
+        .send("Đơn hàng đã được đặt. Vui lòng kiểm tra email để xác nhận.");
+    } catch (error) {
+      console.error("Error sending order confirmation email:", error);
+      res.status(500).json({
+        error: {
+          message: "Có lỗi xảy ra khi gửi email xác nhận.",
+        },
+      });
     }
   }
 }

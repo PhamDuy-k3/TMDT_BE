@@ -22,6 +22,9 @@ const cartOderModel = mongoose.Schema({
   note: {
     type: String,
   },
+  gmail: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

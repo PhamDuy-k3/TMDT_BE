@@ -1,9 +1,6 @@
 import axios from "axios";
 import crypto from "crypto";
 import querystring from "querystring";
-import { config } from "../../config/database/vnpay.config.js";
-import moment from "moment";
-import sortObject from "../utils/sortObject.js";
 
 export default class PaymentController {
   async create(req, res) {

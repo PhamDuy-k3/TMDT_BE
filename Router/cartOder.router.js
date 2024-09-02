@@ -6,6 +6,12 @@ export const cartOderRouter = (app) => {
   const cartOderController = new CartOderController();
 
   router.post("/", cartOderController.create);
+
+  router.post(
+    "/SendOrderInformationViaGmail",
+    cartOderController.sendOrderInformationViaGmail
+  );
+
   router.get("/", cartOderController.index);
 
   router.put("/:cartOrderId", cartOderController.update);
