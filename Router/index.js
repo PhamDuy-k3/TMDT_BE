@@ -8,6 +8,7 @@ import { cartOderRouter } from "./cartOder.router.js";
 import { discountcodeRouter } from "./discountcode_router.js";
 import { commentRouter } from "./comment_router.js";
 import { paymentRouter } from "./payment_router.js";
+import { ChatRouter } from "./chat_router.js";
 export const router = (app) => {
   userRouter(app);
   productRouter(app);
@@ -19,4 +20,5 @@ export const router = (app) => {
   discountcodeRouter(app);
   commentRouter(app);
   paymentRouter(app);
+  ChatRouter(app);
 };

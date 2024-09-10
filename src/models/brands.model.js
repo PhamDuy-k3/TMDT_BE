@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const brandsModel = mongoose.Schema(
   {
     // cấu trúc collextion

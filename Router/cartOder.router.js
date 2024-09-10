@@ -13,6 +13,8 @@ export const cartOderRouter = (app) => {
   );
 
   router.get("/", cartOderController.index);
+  
+  router.get("/:orderId", cartOderController.show);
 
   router.put("/:cartOrderId", cartOderController.update);
 

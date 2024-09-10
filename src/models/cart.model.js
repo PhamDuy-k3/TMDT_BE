@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 
 const cartModel = mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.Mixed,
+  },
   name: {
     type: String,
     required: true,

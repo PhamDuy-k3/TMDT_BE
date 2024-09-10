@@ -12,11 +12,11 @@ export default class AuthController {
       if (!user) {
         throw new Error("phone ko chính xác");
       }
-
-      const passwordHashed = hashString(password);
-
-      if (passwordHashed !== user.password) {
-        throw new Error("Pass ko chính xác");
+      if (password) {
+        const passwordHashed = hashString(password);
+        if (passwordHashed !== user.password) {
+          throw new Error("Pass ko chính xác");
+        }
       }
 
       res.json({

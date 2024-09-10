@@ -85,7 +85,6 @@ export default class CartController {
   async deleteCartsByUserId(req, res) {
     try {
       const { userId } = req.params;
-      console.log(userId);
       const result = await cartModel.deleteMany({ id_user: userId });
 
       res.json({

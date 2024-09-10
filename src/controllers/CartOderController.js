@@ -23,7 +23,18 @@ export default class CartOderController {
       });
     }
   }
-
+  async show(req, res) {
+    try {
+      const { orderId } = req.params;
+      const order = await cartOderModel.findById(orderId);
+      res.json({
+        data: order,
+      });
+    } catch (error) {
+      res.json(error);
+    }
+  }
+  s;
   async update(req, res) {
     try {
       const data = req.body;
@@ -67,9 +78,9 @@ export default class CartOderController {
       if (id_user_oder) {
         conditions.id_user_oder = id_user_oder;
       }
-
-      // Lọc theo trạng thái, mặc định bỏ qua đơn hàng đã giao
-      conditions.status = status || { $ne: "delivered" };
+      if (status) {
+        conditions.status = status;
+      }
 
       // Lọc theo khoảng thời gian
       if (startDate && endDate) {
@@ -85,6 +96,7 @@ export default class CartOderController {
       }
 
       const carts = await cartOderModel.find(conditions);
+
       res.status(200).json({ data: carts, status_code: 200 });
     } catch (error) {
       console.error("Error fetching cart orders:", error);

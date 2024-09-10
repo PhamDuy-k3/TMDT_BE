@@ -5,7 +5,9 @@ export default class DiscountcodeController {
     try {
       const data = req.body;
       const file = req.file;
-      data.logoShop = file.filename;
+      if (file) {
+        data.logoShop = file.filename;
+      }
       const discountcodes = await discountcodeModel.create(data);
       res.json(discountcodes);
     } catch (error) {
@@ -26,6 +28,7 @@ export default class DiscountcodeController {
       }
 
       const discountcodeModels = await discountcodeModel.find(conditions);
+
       res.json({
         status_code: 200,
         data: discountcodeModels,

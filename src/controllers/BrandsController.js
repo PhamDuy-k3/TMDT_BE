@@ -1,12 +1,14 @@
-import brandsModel from "../models/brands.model.js";
+import Brands from "../models/brands.model.js";
 
 export default class BrandController {
   async create(req, res) {
     try {
       const data = req.body;
       const file = req.file;
-      data.logo = file.filename;
-      const brands = await brandsModel.create(data);
+      if (file) {
+        data.logo = file.filename;
+      }
+      const brands = await Brands.create(data);
       res.json(brands);
     } catch (error) {
       res.json({
@@ -19,7 +21,7 @@ export default class BrandController {
   async show(req, res) {
     try {
       const { brandId } = req.params;
-      const brand = await brandsModel.findById(brandId);
+      const brand = await Brands.findById(brandId);
       res.json({
         data: brand,
       });
@@ -29,7 +31,7 @@ export default class BrandController {
   }
   async index(req, res) {
     try {
-      const brands = await brandsModel.find({});
+      const brands = await Brands.find({});
       res.json({
         data: brands,
       });

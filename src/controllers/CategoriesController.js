@@ -4,8 +4,10 @@ export default class CategoriesController {
     try {
       const data = req.body;
       const file = req.file;
-      data.image = file.filename;
-      const categories = await categoriesModel.create(data); // đợi cho kết quả dc tra ve
+      if (file) {
+        data.image = file.filename;
+      }
+      const categories = await categoriesModel.create(data);
       res.json(categories);
     } catch (error) {
       res.json(error);

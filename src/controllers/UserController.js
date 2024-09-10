@@ -43,8 +43,9 @@ export default class UserController {
       if (file) {
         data.avatar = file.filename;
       }
-      data.password = hashString(data.password);
-
+      if (data.password) {
+        data.password = hashString(data.password);
+      }
       const userServices = new UserService();
       const userUpdate = await userServices.update(userId, data);
 

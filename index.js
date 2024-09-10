@@ -5,7 +5,6 @@ import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
-
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
@@ -36,9 +35,16 @@ io.on("connection", (socket) => {
       ...cmt,
       timestamp: new Date().toISOString(),
     };
-    console.log(commentWithTimestamp);
 
     socket.broadcast.emit("comments", commentWithTimestamp);
+  });
+  
+  socket.on("cart", (cart) => {
+    const cartWithTimestamp = {
+      ...cart,
+      timestamp: new Date().toISOString(),
+    };
+    socket.broadcast.emit("cart", cartWithTimestamp);
   });
   socket.on("disconnect", () => {
     console.log("user disconnected");

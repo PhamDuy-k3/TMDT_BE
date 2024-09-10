@@ -7,7 +7,15 @@ const cartOderModel = mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["unconfirmed", "confirmed", "delivered"],
+    enum: [
+      "unconfirmed", // Chưa xác nhận
+      "confirmed", // Đã xác nhận
+      "processing", // Đang xử lý
+      "shipped", // Đã giao hàng
+      "delivered", // Đã giao thành công
+      "canceled", // Đã hủy
+      "returned", // Đã trả hàng
+    ],
     required: true,
     default: "unconfirmed",
   },
