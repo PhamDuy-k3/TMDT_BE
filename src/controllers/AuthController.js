@@ -8,26 +8,50 @@ export default class AuthController {
   async login(req, res) {
     try {
       const { phone, password } = req.body;
+
+      // Kiểm tra sự tồn tại của người dùng qua số điện thoại
       const user = await userModel.findOne({ phone });
       if (!user) {
-        throw new Error("phone ko chính xác");
+        return res.status(401).json({
+          error: {
+            message: "Thông tin đăng nhập không chính xác", // Không tiết lộ thông tin cụ thể về số điện thoại
+          },
+        });
       }
+
+      // Kiểm tra mật khẩu
       if (password) {
         const passwordHashed = hashString(password);
-        if (passwordHashed !== user.password) {
-          throw new Error("Pass ko chính xác");
+
+        // Sử dụng crypto.timingSafeEqual để bảo mật hơn khi so sánh chuỗi
+        const passwordBuffer = Buffer.from(passwordHashed, "utf-8");
+        const userPasswordBuffer = Buffer.from(user.password, "utf-8");
+
+        // console.log(passwordBuffer);
+        if (!crypto.timingSafeEqual(passwordBuffer, userPasswordBuffer)) {
+          return res.status(401).json({
+            error: {
+              message: "Thông tin đăng nhập không chính xác", // Không tiết lộ chi tiết
+            },
+          });
         }
       }
 
-      res.json({
-        user_token: generateToken({ id: user._id }),
+      // Tạo token cho người dùng
+      const token = generateToken({ id: user._id });
+
+      // Trả về thông tin người dùng cùng token
+      return res.status(200).json({
+        user_token: token,
         phone_user: user.phone,
         id_user: user._id,
       });
     } catch (error) {
-      res.json({
+      // Xử lý các lỗi bất ngờ
+      return res.status(500).json({
         error: {
-          message: error.message,
+          message: "Đã có lỗi xảy ra, vui lòng thử lại sau.",
+          details: error.message, // Gửi chi tiết lỗi cho mục đích gỡ lỗi
         },
       });
     }

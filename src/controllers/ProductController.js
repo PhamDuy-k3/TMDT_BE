@@ -176,6 +176,75 @@ export default class ProductController {
       if (category_id) {
         conditions.category_id = category_id;
       }
+      if (prices) {
+        conditions.prices = { $gte: parseInt(prices) }; // tìm sản phẩm có giá lớn hơn hoặc bằng giá nhập vào
+      }
+      conditions.stock = { $gt: 0 };
+
+      let sortOption = {};
+      if (sortOrder === "asc") {
+        sortOption = { prices: 1 }; // sắp xếp tăng dần
+      } else if (sortOrder === "desc") {
+        sortOption = { prices: -1 }; // sắp xếp giảm dần
+      }
+
+      // thực hiện các tác vụ bất đồng bộ để tăng hiệu suất
+      const [count, products] = await Promise.all([
+        productModel.countDocuments(conditions),
+        productModel
+          .find(conditions)
+          .limit(limit)
+          .skip(offset)
+          .sort(sortOption), // sắp xếp giá theo thứ tự tăng dần hoặc giảm dần
+      ]);
+
+      // count: số lượng phần tử trong cơ sở dữ liệu
+      // truy xuất số lượng phần tử dựa trên limit và offset
+
+      const pagination = Math.ceil(count / limit);
+
+      res.json({
+        data: products,
+        count,
+        limit: +limit,
+        page: +page,
+        pagination,
+      });
+    } catch (error) {
+      res.json({
+        error: {
+          message: error.message,
+        },
+      });
+    }
+  }
+  async indexAdmin(req, res) {
+    try {
+      const {
+        limit = 2,
+        page = 1,
+        name,
+        prices,
+        category_id,
+        sortOrder,
+      } = req.query;
+      const offset = (page - 1) * limit;
+      const conditions = {}; // chứa các tham số lọc
+
+      if (name) {
+        conditions.name = new RegExp(`${name}`, "i"); // "i" để không phân biệt chữ hoa chữ thường
+      }
+
+      if (prices) {
+        conditions.prices = { $gte: parseInt(prices) }; // tìm sản phẩm có giá lớn hơn hoặc bằng giá nhập vào
+      }
+
+      if (category_id) {
+        conditions.category_id = category_id;
+      }
+      if (prices) {
+        conditions.prices = { $gte: parseInt(prices) }; // tìm sản phẩm có giá lớn hơn hoặc bằng giá nhập vào
+      }
 
       let sortOption = {};
       if (sortOrder === "asc") {

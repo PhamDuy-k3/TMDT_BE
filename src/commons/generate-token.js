@@ -1,36 +1,38 @@
 import moment from "moment";
-import crypto from "node:crypto"; // mã hóa
+import crypto from "crypto"; // mã hóa
 
 export const generateToken = (
   data,
-  alg = "sha1",
+  secretKey = "example",
+  alg = "HS256",
   exp = moment().add(1, "months").unix()
 ) => {
-  // tạo token
-  const header = JSON.stringify({
+  // Tạo header và payload cho token
+  const header = {
     alg: alg,
     typ: "JWT",
-  });
-  const payload = JSON.stringify({
+  };
+
+  const payload = {
     ...data,
     iat: moment().unix(),
     exp: exp,
-  });
+  };
 
-  const payloadBase64 = Buffer.from(payload)
-    .toString("base64")
-    .replace("==", "")
-    .replace("=", "");
+  // Mã hóa Base64 URL header và payload
+  const headerBase64 = Buffer.from(JSON.stringify(header)).toString(
+    "base64url"
+  );
+  const payloadBase64 = Buffer.from(JSON.stringify(payload)).toString(
+    "base64url"
+  );
 
-  const headerBase64 = Buffer.from(header)
-    .toString("base64")
-    .replace("==", "")
-    .replace("=", "");
+  // Tạo chữ ký (signature) bằng thuật toán HMAC với SHA256
   const signature = crypto
-    .createHmac("sha1", "example")
-    .update(headerBase64 + "." + payloadBase64)
+    .createHmac("sha256", secretKey)
+    .update(`${headerBase64}.${payloadBase64}`)
     .digest("hex");
 
-  //trả vê token
+  // Trả về token (header.payload.signature)
   return `${headerBase64}.${payloadBase64}.${signature}`;
 };

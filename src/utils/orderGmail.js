@@ -5,8 +5,8 @@ dotenv.config();
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 587, // Sử dụng 465 nếu bạn muốn dùng SSL
-  secure: false, // true cho port 465, false cho port 587
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -49,7 +49,6 @@ function sendOrderConfirmationGmail(toEmail, orderDetails) {
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.error("Error sending email:", error);
-      // Có thể ném lỗi hoặc thực hiện các hành động khác tùy theo yêu cầu
     } else {
       console.log("Email sent:", info.response);
     }

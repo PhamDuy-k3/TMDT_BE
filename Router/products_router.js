@@ -14,6 +14,7 @@ export const productRouter = (app) => {
     productController.create
   );
   router.get("/", productController.index);
+  router.get("/admin", productController.indexAdmin);
 
   router.get("/:productId", productController.show);
 

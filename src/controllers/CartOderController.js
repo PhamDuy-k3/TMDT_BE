@@ -73,7 +73,6 @@ export default class CartOderController {
     try {
       const { id_user_oder, status, startDate, endDate } = req.query;
       const conditions = {};
-
       // Lọc theo ID người dùng
       if (id_user_oder) {
         conditions.id_user_oder = id_user_oder;
