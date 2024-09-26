@@ -45,6 +45,7 @@ export default class AuthController {
         user_token: token,
         phone_user: user.phone,
         id_user: user._id,
+        isVerified: user.isVerified,
       });
     } catch (error) {
       // Xử lý các lỗi bất ngờ

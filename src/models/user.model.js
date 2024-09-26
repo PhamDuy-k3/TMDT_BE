@@ -18,6 +18,7 @@ const userModel = mongoose.Schema(
     },
     level: {
       type: Number,
+      default: 2,
     },
     password: {
       type: String,
@@ -37,6 +38,8 @@ const userModel = mongoose.Schema(
     town_id: {
       type: mongoose.Schema.Types.Mixed,
     },
+    isVerified: { type: Boolean, default: false },
+    verificationCode: { type: String },
     avatar: {
       type: String,
       get: function (avatar) {

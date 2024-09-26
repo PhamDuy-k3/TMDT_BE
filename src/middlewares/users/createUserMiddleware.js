@@ -56,6 +56,12 @@ export default function CreateUserMiddleware(req, res, next) {
         "any.required": "Vui lòng chọn province ID của bạn.",
       })
     ),
+    isVerified: Joi.boolean().default(false).messages({
+      "boolean.base": "isVerified phải là giá trị true hoặc false.",
+    }),
+    verificationCode: Joi.string().allow(null, "").messages({
+      "string.base": "verificationCode phải là một chuỗi.",
+    }),
     district_id: Joi.alternatives().try(
       Joi.string().messages({
         "string.base": "district_id phải là chuỗi hoặc số.",
