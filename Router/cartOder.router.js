@@ -7,11 +7,6 @@ export const cartOderRouter = (app) => {
 
   router.post("/", cartOderController.create);
 
-  router.post(
-    "/SendOrderInformationViaEmail",
-    cartOderController.sendOrderInformationViaEmail
-  );
-
   router.get("/", cartOderController.index);
   
   router.get("/:orderId", cartOderController.show);

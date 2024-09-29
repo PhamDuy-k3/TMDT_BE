@@ -9,11 +9,14 @@ export default class CartOderController {
     try {
       const data = req.body;
       const cart = await cartOderModel.create(data);
-      res.status(201).json({
-        data: cart,
-        status_code: 201,
-        errors: [],
-      });
+      if (cart) {
+        res.status(201).json({
+          data: cart,
+          status_code: 201,
+          errors: [],
+        });
+        sendOrderConfirmationEmail(cart.gmail, cart);
+      }
     } catch (error) {
       console.error("Error creating cart order:", error);
       res.status(500).json({
