@@ -133,4 +133,9 @@ export default class AuthController {
       });
     }
   }
+  async checkToken(req, res) {
+    res.status(200).json({
+      message: "token còn hạn",
+    });
+  }
 }

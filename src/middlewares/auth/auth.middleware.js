@@ -13,16 +13,21 @@ export default async function AuthMiddleware(req, res, next) {
         },
       });
     }
-
     const { header, payload } = DecodeToken(authorization);
-    // console.log(payload)
-    // console.log(header)
-    // Tìm kiếm người dùng theo ID từ payload của token
+
     const user = await userModel.findById(payload.id);
     if (!user) {
       return res.status(404).json({
         error: {
-          message: "User not found",
+          message: "User ko tồn tại",
+        },
+      });
+    }
+    // Kiểm tra token đã hết hạn
+    if (moment().unix() > payload.exp) {
+      return res.status(500).json({
+        error: {
+          message: "Internal server error",
         },
       });
     }
