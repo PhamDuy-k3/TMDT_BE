@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-function sendOrderConfirmationGmail(toEmail, orderDetails) {
+function sendOrderConfirmationEmail(toEmail, orderDetails) {
   const itemsDetails =
     orderDetails?.carts
       ?.map(
@@ -55,4 +55,4 @@ function sendOrderConfirmationGmail(toEmail, orderDetails) {
   });
 }
 
-export default sendOrderConfirmationGmail;
+export default sendOrderConfirmationEmail;

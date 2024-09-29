@@ -8,8 +8,8 @@ export const cartOderRouter = (app) => {
   router.post("/", cartOderController.create);
 
   router.post(
-    "/SendOrderInformationViaGmail",
-    cartOderController.sendOrderInformationViaGmail
+    "/SendOrderInformationViaEmail",
+    cartOderController.sendOrderInformationViaEmail
   );
 
   router.get("/", cartOderController.index);

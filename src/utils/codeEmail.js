@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Hàm gửi email xác nhận
-async function sendCodeGmail(toEmail, code) {
+async function sendCodeToEmail(toEmail, code) {
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: toEmail,
@@ -41,4 +41,4 @@ async function sendCodeGmail(toEmail, code) {
   }
 }
 
-export default sendCodeGmail;
+export default sendCodeToEmail;

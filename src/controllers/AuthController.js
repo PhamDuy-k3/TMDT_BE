@@ -3,6 +3,8 @@ import userModel from "../models/user.model.js";
 import crypto from "node:crypto"; // mã hóa
 import { hashString } from "../commons/hash-data.js";
 import { generateToken } from "../commons/generate-token.js";
+import { UserService } from "../services/user.services.js";
+import { GenerateRandomCode } from "../utils/generateRandomCode.js";
 
 export default class AuthController {
   async login(req, res) {
@@ -56,5 +58,58 @@ export default class AuthController {
         },
       });
     }
+  }
+  async register(req, res) {
+    try {
+      const data = req.body;
+      data.verificationCode = GenerateRandomCode();
+
+      if (data.password) {
+        data.password = hashString(data.password);
+      }
+
+      const userServices = new UserService();
+      const user = await userServices.store(data);
+
+      if (user) {
+        // Trả về trạng thái thành công ngay lập tức
+        res.json({
+          data: user._id,
+          status_code: 200,
+          errors: [],
+        });
+
+        // Gửi email sau khi trả về kết quả (không chờ email gửi xong)
+        userServices
+          .sendEmail(data.email, data.verificationCode)
+          .then(() => {
+            console.log("Email sent successfully");
+          })
+          .catch((error) => {
+            console.error("Error sending email:", error);
+          });
+      } else {
+        res.status(400).json({
+          message: "User registration failed",
+          errors: [],
+        });
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+      res.status(500).json({
+        message: "Internal server error",
+        error: error,
+      });
+    }
+  }
+  async verify(req, res) {
+    const { userId } = req.params;
+    const data = req.body;
+    const userServices = new UserService();
+    const userUpdate = await userServices.update(userId, data);
+    res.json({
+      data: userUpdate,
+      status_code: 200,
+    });
   }
 }

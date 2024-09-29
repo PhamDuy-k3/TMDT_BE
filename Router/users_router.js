@@ -27,8 +27,5 @@ export const userRouter = (app) => {
   router.delete("/:userId", userController.delete);
   //danh sách user
   router.get("/", userController.index);
-
-  router.post("/sendCodeToGmail", userController.sendCodeToGmail);
-
   app.use("/users", router);
 };

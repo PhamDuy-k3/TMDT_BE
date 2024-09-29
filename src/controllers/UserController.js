@@ -1,7 +1,5 @@
 import { UserService } from "../services/user.services.js";
 import { hashString } from "../commons/hash-data.js";
-import sendCodeGmail from "../utils/codeGmail.js";
-import { GenerateRandomCode } from "../utils/generateRandomCode.js";
 export default class UserController {
   async create(req, res) {
     // xứ lý input
@@ -94,36 +92,6 @@ export default class UserController {
       res.json({
         error: {
           message: error.message,
-        },
-      });
-    }
-  }
-
-  async sendCodeToGmail(req, res) {
-    const code = GenerateRandomCode();
-    const gmail = req.body.gmail;
-    const userId = req.body.id_user;
-
-    try {
-      // Lưu mã code vào user
-      const userServices = new UserService();
-      const result = await userServices.update(userId, {
-        verificationCode: code,
-      });
-      if (result) {
-        // Gửi email với mã xác nhận
-        await sendCodeGmail(gmail, code);
-
-        res.status(200).json({
-          status_code: 200,
-          message: "Mã xác nhận đăng ký đã được gửi đến email",
-        });
-      }
-    } catch (error) {
-      console.error("Lỗi khi gửi mã xác nhận qua email:", error);
-      res.status(500).json({
-        error: {
-          message: "Có lỗi xảy ra khi gửi email xác nhận.",
         },
       });
     }

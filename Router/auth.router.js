@@ -6,7 +6,10 @@ export const authRouter = (app) => {
 
   const authController = new AuthController();
 
-  router.post('/login', LoginMiddleware, authController.login)
+  router.post("/login", LoginMiddleware, authController.login);
+  router.post("/register", authController.register);
+
+  router.put("/verify/:userId", authController.verify);
 
   app.use("/auth", router);
 };

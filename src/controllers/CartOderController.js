@@ -1,5 +1,5 @@
 import cartOderModel from "../models/cartOder.model.js";
-import sendOrderConfirmationGmail from "../utils/orderGmail.js";
+import sendOrderConfirmationEmail from "../utils/orderEmail.js";
 import crypto from "node:crypto";
 
 const confirmationTokens = {};
@@ -107,11 +107,11 @@ export default class CartOderController {
     }
   }
 
-  async sendOrderInformationViaGmail(req, res) {
+  async sendOrderInformationViaEmail(req, res) {
     const orderDetails = req.body;
     // Gửi email xác nhận
     try {
-      await sendOrderConfirmationGmail(orderDetails.gmail, orderDetails);
+      await sendOrderConfirmationEmail(orderDetails.gmail, orderDetails);
       res
         .status(200)
         .send("Đơn hàng đã được đặt. Vui lòng kiểm tra email để xác nhận.");

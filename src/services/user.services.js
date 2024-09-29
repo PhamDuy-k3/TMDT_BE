@@ -1,4 +1,5 @@
 import userModel from "../models/user.model.js";
+import sendCodeToEmail from "../utils/codeEmail.js";
 
 export class UserService {
   async store(user) {
@@ -62,5 +63,22 @@ export class UserService {
       page: +page,
       pagination,
     };
+  }
+
+  async sendEmail(email, code) {
+    try {
+      await sendCodeToEmail(email, code);
+      res.status(200).json({
+        status_code: 200,
+        message: "Mã xác nhận đăng ký đã được gửi đến email",
+      });
+    } catch (error) {
+      console.error("Lỗi khi gửi mã xác nhận qua email:", error);
+      res.status(500).json({
+        error: {
+          message: "Có lỗi xảy ra khi gửi email xác nhận.",
+        },
+      });
+    }
   }
 }
