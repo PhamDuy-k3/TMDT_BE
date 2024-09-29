@@ -9,7 +9,7 @@ export const userRouter = (app) => {
   const router = express.Router();
   const userController = new UserController();
 
-  //router.use(AuthMiddleware);
+  router.use(AuthMiddleware);
 
   router.post(
     "/",
@@ -26,6 +26,8 @@ export const userRouter = (app) => {
   );
   router.delete("/:userId", userController.delete);
   //danh sách user
+
   router.get("/", userController.index);
+
   app.use("/users", router);
 };

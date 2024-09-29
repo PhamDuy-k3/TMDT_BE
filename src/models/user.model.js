@@ -39,6 +39,9 @@ const userModel = mongoose.Schema(
       type: mongoose.Schema.Types.Mixed,
     },
     isVerified: { type: Boolean, default: false },
+    codeExpired: {
+      type: Date,
+    },
     verificationCode: { type: String },
     avatar: {
       type: String,

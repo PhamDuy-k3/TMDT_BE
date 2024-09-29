@@ -5,8 +5,10 @@ import { hashString } from "../commons/hash-data.js";
 import { generateToken } from "../commons/generate-token.js";
 import { UserService } from "../services/user.services.js";
 import { GenerateRandomCode } from "../utils/generateRandomCode.js";
+import dayjs from "dayjs";
 
 export default class AuthController {
+  // Đăng nhập
   async login(req, res) {
     try {
       const { phone, password } = req.body;
@@ -16,7 +18,7 @@ export default class AuthController {
       if (!user) {
         return res.status(401).json({
           error: {
-            message: "Thông tin đăng nhập không chính xác", // Không tiết lộ thông tin cụ thể về số điện thoại
+            message: "Thông tin đăng nhập không chính xác", // Không tiết lộ chi tiết
           },
         });
       }
@@ -25,11 +27,10 @@ export default class AuthController {
       if (password) {
         const passwordHashed = hashString(password);
 
-        // Sử dụng crypto.timingSafeEqual để bảo mật hơn khi so sánh chuỗi
+        // Sử dụng crypto.timingSafeEqual để bảo mật so sánh chuỗi
         const passwordBuffer = Buffer.from(passwordHashed, "utf-8");
         const userPasswordBuffer = Buffer.from(user.password, "utf-8");
 
-        // console.log(passwordBuffer);
         if (!crypto.timingSafeEqual(passwordBuffer, userPasswordBuffer)) {
           return res.status(401).json({
             error: {
@@ -48,6 +49,7 @@ export default class AuthController {
         phone_user: user.phone,
         id_user: user._id,
         isVerified: user.isVerified,
+        codeExpired: user.codeExpired,
       });
     } catch (error) {
       // Xử lý các lỗi bất ngờ
@@ -59,11 +61,19 @@ export default class AuthController {
       });
     }
   }
+
+  // Đăng ký
   async register(req, res) {
     try {
       const data = req.body;
+
+      // Tạo mã xác thực ngẫu nhiên
       data.verificationCode = GenerateRandomCode();
 
+      // Đặt thời gian hết hạn mã xác thực
+      data.codeExpired = dayjs().add(5, "minutes");
+
+      // Mã hóa mật khẩu nếu có
       if (data.password) {
         data.password = hashString(data.password);
       }
@@ -83,33 +93,44 @@ export default class AuthController {
         userServices
           .sendEmail(data.email, data.verificationCode)
           .then(() => {
-            console.log("Email sent successfully");
+            console.log("Email đã gửi thành công");
           })
           .catch((error) => {
-            console.error("Error sending email:", error);
+            console.error("Lỗi khi gửi email:", error);
           });
       } else {
         res.status(400).json({
-          message: "User registration failed",
+          message: "Đăng ký người dùng thất bại",
           errors: [],
         });
       }
     } catch (error) {
-      console.error("Error during registration:", error);
+      console.error("Lỗi trong quá trình đăng ký:", error);
       res.status(500).json({
-        message: "Internal server error",
-        error: error,
+        message: "Lỗi máy chủ nội bộ",
+        error: error.message,
       });
     }
   }
+
+  // Xác thực tài khoản
   async verify(req, res) {
-    const { userId } = req.params;
-    const data = req.body;
-    const userServices = new UserService();
-    const userUpdate = await userServices.update(userId, data);
-    res.json({
-      data: userUpdate,
-      status_code: 200,
-    });
+    try {
+      const { userId } = req.params;
+      const data = req.body;
+      const userServices = new UserService();
+      const userUpdate = await userServices.update(userId, data);
+
+      res.json({
+        data: userUpdate,
+        status_code: 200,
+      });
+    } catch (error) {
+      console.error("Lỗi trong quá trình xác thực:", error);
+      res.status(500).json({
+        message: "Lỗi máy chủ nội bộ",
+        error: error.message,
+      });
+    }
   }
 }

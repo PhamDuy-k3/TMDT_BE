@@ -62,6 +62,9 @@ export default function CreateUserMiddleware(req, res, next) {
     verificationCode: Joi.string().allow(null, "").messages({
       "string.base": "verificationCode phải là một chuỗi.",
     }),
+    codeExpired: Joi.date().messages({
+      "date.base": "codeExpiredphải là kiểu ngày tháng.",
+    }),
     district_id: Joi.alternatives().try(
       Joi.string().messages({
         "string.base": "district_id phải là chuỗi hoặc số.",

@@ -2,7 +2,7 @@ import moment from "moment";
 import crypto from "crypto"; // mã hóa
 
 export const generateToken = (
-  data,
+  data, //id
   secretKey = "example",
   alg = "HS256",
   exp = moment().add(1, "months").unix()
