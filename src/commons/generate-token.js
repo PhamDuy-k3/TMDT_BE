@@ -5,7 +5,7 @@ export const generateToken = (
   data, //id
   secretKey = "example",
   alg = "HS256",
-  exp = moment().add(1, "minutes").unix()
+  exp = moment().add(1, "months").unix()
 ) => {
   // Tạo header và payload cho token
   const header = {

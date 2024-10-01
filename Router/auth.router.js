@@ -12,6 +12,8 @@ export const authRouter = (app) => {
   router.post("/register", authController.register);
 
   router.get("/checkToken", AuthMiddleware, authController.checkToken);
+
+  router.get("/searchRegister/:userId", authController.searchRegister);
   
   router.put("/verify/:userId", authController.verify);
 

@@ -113,6 +113,19 @@ export default class AuthController {
     }
   }
 
+  // tim kiêm tk cần xác thực
+  async searchRegister(req, res) {
+    try {
+      const { userId } = req.params;
+      const userServices = new UserService();
+      const user = await userServices.getById(userId);
+      res.json({
+        data: user,
+      });
+    } catch (error) {
+      res.json(error);
+    }
+  }
   // Xác thực tài khoản
   async verify(req, res) {
     try {

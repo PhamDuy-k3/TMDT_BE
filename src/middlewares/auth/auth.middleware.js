@@ -13,21 +13,33 @@ export default async function AuthMiddleware(req, res, next) {
         },
       });
     }
+
+    // Decode token để lấy header và payload
     const { header, payload } = DecodeToken(authorization);
+
+    if (payload.iss === "https://accounts.google.com") {
+      req.authUser = {
+        id: payload.sub,
+        name: payload.name,
+        email: payload.email,
+      };
+      return next();
+    }
 
     const user = await userModel.findById(payload.id);
     if (!user) {
       return res.status(404).json({
         error: {
-          message: "User ko tồn tại",
+          message: "User không tồn tại",
         },
       });
     }
-    // Kiểm tra token đã hết hạn
+
+    // Kiểm tra token đã hết hạn chưa
     if (moment().unix() > payload.exp) {
       return res.status(500).json({
         error: {
-          message: "Internal server error",
+          message: "Token đã hết hạn",
         },
       });
     }
