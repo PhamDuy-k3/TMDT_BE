@@ -16,6 +16,10 @@ export const cartRouter = (app) => {
     "/deleteCartsByUserId/:userId",
     cartController.deleteCartsByUserId
   );
+  router.get(
+    "/getCartsByUserIdAndIdProduct",
+    cartController.getCartsByUserIdAndIdProduct
+  );
 
   router.put("/:cartId", uploadImage.single("image"), cartController.update);
 

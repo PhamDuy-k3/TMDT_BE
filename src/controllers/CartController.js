@@ -99,6 +99,29 @@ export default class CartController {
       });
     }
   }
+  async getCartsByUserIdAndIdProduct(req, res) {
+    try {
+      const { id_user, ids_product } = req.query;
+      let array = ids_product.split(",");
+      const conditions = {};
+      if (id_user) {
+        conditions.id_user = id_user;
+      }
+      if (array && array.length > 0) {
+        conditions._id = { $in: array };
+      }
+      const carts = await cartModel.find(conditions);
+      res.json({
+        data: carts,
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: {
+          message: error.message,
+        },
+      });
+    }
+  }
   async index(req, res) {
     try {
       const { id_user } = req.query;
