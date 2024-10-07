@@ -22,7 +22,6 @@ export class UserService {
     if (user.phone === data.phone) {
       delete data.phone;
     }
-    //console.log("data", data);
     const userUpdate = await userModel.findByIdAndUpdate(userId, data, {
       new: true,
     });

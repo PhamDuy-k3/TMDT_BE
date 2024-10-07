@@ -34,7 +34,6 @@ async function sendCodeToEmail(toEmail, code) {
   try {
     // Gửi email và đợi phản hồi từ transporter
     const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent:", info.response);
   } catch (error) {
     console.error("Lỗi khi gửi email:", error);
     throw new Error("Không thể gửi email xác nhận.");

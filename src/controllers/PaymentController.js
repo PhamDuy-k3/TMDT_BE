@@ -80,7 +80,6 @@ export default class PaymentController {
 
   async handlePaymentResult(req, res) {
     const paymentResult = req.body;
-    console.log("Payment result:", paymentResult);
     res.status(200).json({ paymentResult });
   }
 }
