@@ -161,6 +161,7 @@ export default class ProductController {
         prices,
         category_id,
         sortOrder,
+        idsBrand,
       } = req.query;
       const offset = (page - 1) * limit;
       const conditions = {}; // chứa các tham số lọc
@@ -178,6 +179,9 @@ export default class ProductController {
       }
       if (prices) {
         conditions.prices = { $gte: parseInt(prices) }; // tìm sản phẩm có giá lớn hơn hoặc bằng giá nhập vào
+      }
+      if (idsBrand) {
+        conditions.brand_id = { $in: idsBrand.split(",") };
       }
       conditions.stock = { $gt: 0 };
 
@@ -230,7 +234,6 @@ export default class ProductController {
       } = req.query;
       const offset = (page - 1) * limit;
       const conditions = {}; // chứa các tham số lọc
-
       if (name) {
         conditions.name = new RegExp(`${name}`, "i"); // "i" để không phân biệt chữ hoa chữ thường
       }

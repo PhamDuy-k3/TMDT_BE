@@ -34,6 +34,7 @@ export default class BrandController {
       const brands = await Brands.find({});
       res.json({
         data: brands,
+        status_code: 200,
       });
     } catch (error) {
       res.json({
