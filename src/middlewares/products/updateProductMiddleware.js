@@ -18,6 +18,9 @@ export default function UpdateProductMiddleware(req, res, next) {
       "string.max": "Discount không được vượt quá {{#limit}} ký tự.",
       "string.min": "Discount không được thấp hơn {{#limit}} ký tự.",
     }),
+    createdAt: Joi.date().messages({
+      "date.base": "createdAt là kiểu ngày tháng.",
+    }),
     category_id: Joi.string().messages({
       "number.base": "category_id là 1 số.",
     }),

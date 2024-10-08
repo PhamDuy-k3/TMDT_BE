@@ -162,10 +162,11 @@ export default class ProductController {
         category_id,
         sortOrder,
         idsBrand,
+        createdAt,
       } = req.query;
       const offset = (page - 1) * limit;
       const conditions = {}; // chứa các tham số lọc
-
+      
       if (name) {
         conditions.name = new RegExp(`${name}`, "i"); // "i" để không phân biệt chữ hoa chữ thường
       }
@@ -190,6 +191,9 @@ export default class ProductController {
         sortOption = { prices: 1 }; // sắp xếp tăng dần
       } else if (sortOrder === "desc") {
         sortOption = { prices: -1 }; // sắp xếp giảm dần
+      }
+      if (createdAt === "new") {
+        sortOption.createdAt = -1;
       }
 
       // thực hiện các tác vụ bất đồng bộ để tăng hiệu suất

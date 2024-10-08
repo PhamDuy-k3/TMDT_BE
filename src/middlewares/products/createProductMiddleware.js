@@ -25,6 +25,9 @@ export default function CreateProductMiddleware(req, res, next) {
       "number.base": "category_id là 1 chuoi.",
       "any.required": "Vui lòng chọn category_id.",
     }),
+    createdAt: Joi.date().messages({
+      "date.base": "createdAt là kiểu ngày tháng.",
+    }),
     brand_id: Joi.string().messages({
       "number.base": "brand_id là 1 chuoi.",
       "any.required": "Vui lòng chọn brand_id của bạn.",

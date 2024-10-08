@@ -18,6 +18,10 @@ const productModel = mongoose.Schema(
     brand_id: {
       type: String,
     },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
     likedBy: [
       {
         type: mongoose.Schema.Types.ObjectId,
