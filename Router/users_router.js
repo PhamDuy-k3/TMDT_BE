@@ -18,16 +18,27 @@ export const userRouter = (app) => {
     userController.create
   );
   router.get("/:userId", userController.show);
+
   router.put(
     "/:userId",
     uploadImage.single("avatar"),
     UpdateUserMiddleware,
     userController.update
   );
+
+  router.put(
+    "/update/user",
+    uploadImage.single("avatar"),
+    UpdateUserMiddleware,
+    userController.update_user
+  );
   router.delete("/:userId", userController.delete);
   //danh sách user
 
   router.get("/", userController.index);
+
+  // profile user
+  router.get("/profile/user", userController.profile);
 
   app.use("/users", router);
 };

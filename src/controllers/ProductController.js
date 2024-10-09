@@ -38,10 +38,20 @@ export default class ProductController {
   }
   async show(req, res) {
     try {
+      const userId = req.authUser?._id.toString();
       const { productId } = req.params;
       const product = await productModel.findById(productId);
+
+      if (!product.likedBy.includes(userId)) {
+        return res.status(201).json({
+          data: product,
+          message: "Product not liked by the user yet",
+          status_code: 201,
+        });
+      }
       res.json({
         data: product,
+        status_code: 200,
       });
     } catch (error) {
       res.json(error);
@@ -85,8 +95,8 @@ export default class ProductController {
   }
   async updateIncreaseLike(req, res) {
     try {
-      const { productId, userId } = req.params;
-
+      const { productId } = req.params;
+      const userId = req.authUser?._id.toString();
       const product = await productModel.findById(productId);
       if (!product) {
         throw new Error("Product không tồn tại");
@@ -116,8 +126,8 @@ export default class ProductController {
   }
   async updateDecreaseLike(req, res) {
     try {
-      const { productId, userId } = req.params;
-
+      const { productId } = req.params;
+      const userId = req.authUser?._id.toString();
       const product = await productModel.findById(productId);
       if (!product) {
         return res.status(404).json({
@@ -166,7 +176,7 @@ export default class ProductController {
       } = req.query;
       const offset = (page - 1) * limit;
       const conditions = {}; // chứa các tham số lọc
-      
+
       if (name) {
         conditions.name = new RegExp(`${name}`, "i"); // "i" để không phân biệt chữ hoa chữ thường
       }

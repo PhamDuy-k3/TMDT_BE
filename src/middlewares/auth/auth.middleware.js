@@ -19,7 +19,7 @@ export default async function AuthMiddleware(req, res, next) {
 
     if (payload.iss === "https://accounts.google.com") {
       req.authUser = {
-        id: payload.sub,
+        _id: payload.sub,
         name: payload.name,
         email: payload.email,
       };

@@ -4,7 +4,21 @@ import Message from "../models/message.model.js";
 export default class ChatController {
   // Định nghĩa phương thức create
   async create(req, res) {
-    const { userId, adminId } = req.body;
+    const adminId = req.body;
+    const userId = req.authUser?._id.toString();
+    try {
+      const chatRoom = await ChatRoom.create({ userId, adminId });
+      res.status(201).json({
+        data: chatRoom,
+        status_code: 200,
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Lỗi khi tạo phòng chat", error });
+    }
+  }
+  async admin_create(req, res) {
+    const adminId = req.authUser?._id.toString();
+    const userId = req.body;
     try {
       const chatRoom = await ChatRoom.create({ userId, adminId });
       res.status(201).json({
@@ -52,7 +66,35 @@ export default class ChatController {
   }
   async getRoom(req, res) {
     try {
-      const { user_id } = req.query;
+      const user_id = req.authUser?._id.toString();
+
+      const condition = {};
+
+      if (user_id) {
+        condition.userId = user_id;
+      }
+
+      const chatRoom = await ChatRoom.findOne(condition);
+
+      if (!chatRoom) {
+        return res.status(200).json({
+          data: chatRoom,
+          status_code: 201,
+        });
+      }
+
+      return res.status(200).json({
+        data: chatRoom,
+        status_code: 200,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "Đã xảy ra lỗi server", error });
+    }
+  }
+  async getRoomAdmin(req, res) {
+    try {
+      const {user_id} = req.query;
+
       const condition = {};
 
       if (user_id) {

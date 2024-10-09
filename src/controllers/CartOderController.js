@@ -8,6 +8,10 @@ export default class CartOderController {
   async create(req, res) {
     try {
       const data = req.body;
+      if (req.authUser) {
+        const id_user = req.authUser?._id;
+        data.id_user_oder = id_user.toString();
+      }
       const cart = await cartOderModel.create(data);
       if (cart) {
         res.status(201).json({
@@ -74,7 +78,9 @@ export default class CartOderController {
 
   async index(req, res) {
     try {
-      const { id_user_oder, status, startDate, endDate } = req.query;
+      const { status, startDate, endDate } = req.query;
+
+      const id_user_oder = req.authUser?._id.toString();
       const conditions = {};
       // Lọc theo ID người dùng
       if (id_user_oder) {
@@ -109,7 +115,41 @@ export default class CartOderController {
       });
     }
   }
+  async indexAdmin(req, res) {
+    try {
+      const { status, startDate, endDate } = req.query;
+      console.log(startDate, endDate);
+      const conditions = {};
+      // Lọc theo ID người dùng
+      if (status) {
+        conditions.status = status;
+      }
 
+      // Lọc theo khoảng thời gian
+      if (startDate && endDate) {
+        conditions.confirmedAt = {
+          $gte: new Date(startDate).setHours(0, 0, 0, 0),
+          $lte: new Date(endDate).setHours(23, 59, 59, 999),
+        };
+      } else if (startDate) {
+        conditions.confirmedAt = {
+          $gte: new Date(startDate).setHours(0, 0, 0, 0),
+          $lte: new Date(startDate).setHours(23, 59, 59, 999),
+        };
+      }
+
+      const carts = await cartOderModel.find(conditions);
+
+      res.status(200).json({ data: carts, status_code: 200 });
+    } catch (error) {
+      console.error("Error fetching cart orders:", error);
+      res.status(500).json({
+        error: {
+          message: error.message,
+        },
+      });
+    }
+  }
   async sendOrderInformationViaEmail(req, res) {
     const orderDetails = req.body;
     // Gửi email xác nhận

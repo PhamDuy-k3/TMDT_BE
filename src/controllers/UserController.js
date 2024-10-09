@@ -61,6 +61,32 @@ export default class UserController {
       });
     }
   }
+  async update_user(req, res) {
+    try {
+      const data = req.body;
+      const userId = req.authUser?._id.toString();
+      const file = req.file;
+      if (file) {
+        data.avatar = file.filename;
+      }
+      if (data.password) {
+        data.password = hashString(data.password);
+      }
+      const userServices = new UserService();
+      const userUpdate = await userServices.update(userId, data);
+
+      res.json({
+        data: userUpdate,
+        status_code: 200,
+      });
+    } catch (error) {
+      res.json({
+        error: {
+          message: error.message,
+        },
+      });
+    }
+  }
   async delete(req, res) {
     try {
       const { userId } = req.params;
@@ -94,6 +120,18 @@ export default class UserController {
           message: error.message,
         },
       });
+    }
+  }
+  async profile(req, res) {
+    try {
+      const userId = req.authUser?._id.toString();
+      const userServices = new UserService();
+      const user = await userServices.getById(userId);
+      res.json({
+        data: user,
+      });
+    } catch (error) {
+      res.json(error);
     }
   }
 }

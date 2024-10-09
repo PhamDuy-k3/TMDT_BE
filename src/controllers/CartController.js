@@ -4,6 +4,7 @@ export default class CartController {
   async create(req, res) {
     try {
       const data = req.body;
+      data.id_user = req.authUser?._id.toString();
       const file = req.file;
       if (file) {
         data.image = file.filename;
@@ -84,13 +85,15 @@ export default class CartController {
   }
   async deleteCartsByUserId(req, res) {
     try {
-      const { userId } = req.params;
-      const result = await cartModel.deleteMany({ id_user: userId });
+      if (req.authUser) {
+        const user_id = req.authUser?._id.toString();
+        const result = await cartModel.deleteMany({ id_user: user_id });
 
-      res.json({
-        status_code: 200,
-        data: result,
-      });
+        res.json({
+          status_code: 200,
+          data: result,
+        });
+      }
     } catch (error) {
       res.json({
         error: {
@@ -101,11 +104,14 @@ export default class CartController {
   }
   async getCartsByUserIdAndIdProduct(req, res) {
     try {
-      const { id_user, ids_product } = req.query;
+      const { ids_product } = req.query;
+      const idUser = req.authUser?._id.toString();
+
       let array = ids_product.split(",");
+
       const conditions = {};
-      if (id_user) {
-        conditions.id_user = id_user;
+      if (idUser) {
+        conditions.id_user = idUser;
       }
       if (array && array.length > 0) {
         conditions._id = { $in: array };
@@ -124,7 +130,7 @@ export default class CartController {
   }
   async index(req, res) {
     try {
-      const { id_user } = req.query;
+      const id_user = req.authUser?._id.toString();
       const conditions = {};
       if (id_user) {
         conditions.id_user = id_user;

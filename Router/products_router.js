@@ -17,10 +17,10 @@ export const productRouter = (app) => {
     productController.create
   );
   router.get("/", productController.index);
-  
+
   router.get("/admin", productController.indexAdmin);
 
-  router.get("/:productId", productController.show);
+  router.get("/:productId", AuthMiddleware, productController.show);
 
   router.delete("/:productId", productController.delete);
 
@@ -31,11 +31,13 @@ export const productRouter = (app) => {
     productController.update
   );
   router.put(
-    "/increaseLike/:productId/:userId",
+    "/increaseLike/:productId",
+    AuthMiddleware,
     productController.updateIncreaseLike
   );
   router.put(
-    "/decreaseLike/:productId/:userId",
+    "/decreaseLike/:productId",
+    AuthMiddleware,
     productController.updateDecreaseLike
   );
 
