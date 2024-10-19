@@ -14,8 +14,10 @@ export const authRouter = (app) => {
   router.get("/checkToken", AuthMiddleware, authController.checkToken);
 
   router.get("/searchRegister/:userId", authController.searchRegister);
-  
+
   router.put("/verify/:userId", authController.verify);
+  
+  router.post("/refreshToken", authController.refreshToken);
 
   app.use("/auth", router);
 };

@@ -6,6 +6,8 @@ import { generateToken } from "../commons/generate-token.js";
 import { UserService } from "../services/user.services.js";
 import { GenerateRandomCode } from "../utils/generateRandomCode.js";
 import dayjs from "dayjs";
+import refreshTokenModel from "../models/refreshToken.model.js";
+import { generateRefreshToken } from "../commons/generate-refreshToken.js";
 
 export default class AuthController {
   // Đăng nhập
@@ -43,11 +45,23 @@ export default class AuthController {
       // Tạo token cho người dùng
       const token = generateToken({ id: user._id });
 
+      // Tạo refreshToken cho người dùng
+      const refreshToken = generateRefreshToken({ id: user._id });
+
+      // Xóa refresh token cũ nếu có trước khi lưu token mới
+      await refreshTokenModel.deleteMany({ userId: user._id });
+
+      // Lưu refresh token vào MongoDB
+      const newRefreshToken = {
+        userId: user._id,
+        refreshToken: refreshToken,
+      };
+      const RefreshToken = await refreshTokenModel.create(newRefreshToken);
+
       // Trả về thông tin người dùng cùng token
       return res.status(200).json({
         user_token: token,
-        phone_user: user.phone,
-        id_user: user._id,
+        refresh_token: refreshToken,
         isVerified: user.isVerified,
         codeExpired: user.codeExpired,
       });
@@ -55,8 +69,8 @@ export default class AuthController {
       // Xử lý các lỗi bất ngờ
       return res.status(500).json({
         error: {
-          message: "Đã có lỗi xảy ra, vui lòng thử lại sau.",
-          details: error.message, // Gửi chi tiết lỗi cho mục đích gỡ lỗi
+          message: "Đã có lỗi xảy ra trong qua trình login",
+          details: error.message,
         },
       });
     }
@@ -150,5 +164,24 @@ export default class AuthController {
     res.status(200).json({
       message: "token còn hạn",
     });
+  }
+
+  async refreshToken(req, res) {
+    const { refreshToken } = req.body;
+    const newAccessToken = generateToken({
+      id: "6627acf3cb3eb2d9155b2ccc",
+    });
+    res.json({ accessToken: newAccessToken });
+    // if (!refreshToken) return res.status(401).json("Refresh Token Required");
+
+    // // Xác thực refresh token
+    // jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    //   if (err) return res.status(403).json("Invalid Token");
+
+    //   const newAccessToken = generateToken({
+    //     id: user.id,
+    //   });
+    //   res.json({ accessToken: newAccessToken });
+    // });
   }
 }
