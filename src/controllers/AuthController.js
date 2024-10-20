@@ -8,6 +8,7 @@ import { GenerateRandomCode } from "../utils/generateRandomCode.js";
 import dayjs from "dayjs";
 import refreshTokenModel from "../models/refreshToken.model.js";
 import { generateRefreshToken } from "../commons/generate-refreshToken.js";
+import jwt from "jsonwebtoken";
 
 export default class AuthController {
   // Đăng nhập
@@ -168,20 +169,25 @@ export default class AuthController {
 
   async refreshToken(req, res) {
     const { refreshToken } = req.body;
-    const newAccessToken = generateToken({
-      id: "6627acf3cb3eb2d9155b2ccc",
-    });
-    res.json({ accessToken: newAccessToken });
-    // if (!refreshToken) return res.status(401).json("Refresh Token Required");
 
-    // // Xác thực refresh token
-    // jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    //   if (err) return res.status(403).json("Invalid Token");
+    if (!refreshToken) return res.status(401).json("Refresh Token Required");
 
-    //   const newAccessToken = generateToken({
-    //     id: user.id,
-    //   });
-    //   res.json({ accessToken: newAccessToken });
-    // });
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      (err, payload) => {
+        if (err) return res.status(403).json("Invalid Token");
+        console.log(payload);
+        const newAccessToken = generateToken({
+          id: payload.id,
+        });
+
+        if (!newAccessToken) {
+          return res.status(500).json("Token mới tạo không thành công");
+        }
+
+        return res.json({ accessToken: newAccessToken });
+      }
+    );
   }
 }
