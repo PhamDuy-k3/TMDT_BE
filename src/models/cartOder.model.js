@@ -30,6 +30,10 @@ const cartOderModel = mongoose.Schema({
   note: {
     type: String,
   },
+  selectedDiscountCodes: {
+    type: Array,
+    default: [],
+  },
   gmail: {
     type: String,
   },

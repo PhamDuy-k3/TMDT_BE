@@ -13,7 +13,7 @@ export const generateRefreshToken = (
   // Tạo token với thời gian hết hạn là 1 phút
   const token = jwt.sign(payload, secretKey, {
     algorithm: "HS256",
-    expiresIn: "1h",
+    expiresIn: "20d",
   });
 
   return token;

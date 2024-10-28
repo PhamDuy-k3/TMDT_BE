@@ -26,6 +26,7 @@ export default class DiscountcodeController {
         const arrayCodes = selectedDiscountCodes.split(","); // chuyển chuỗi thành mảng
         conditions.code = { $in: arrayCodes };
       }
+      conditions.usageLimit = { $gt: 0 };
 
       const discountcodeModels = await discountcodeModel.find(conditions);
 

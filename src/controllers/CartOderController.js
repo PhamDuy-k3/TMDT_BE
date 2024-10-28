@@ -4,72 +4,68 @@ import productModel from "../models/product.model.js";
 import sendOrderConfirmationEmail from "../utils/orderEmail.js";
 import crypto from "node:crypto";
 import mongoose from "mongoose";
-
+import { io } from "../../index.js";
+import discountcodeModel from "../models/discountcode.model.js";
 const confirmationTokens = {};
 
 export default class CartOderController {
   async create(req, res) {
     try {
       const data = req.body;
-
-      // Thêm ID người dùng vào đơn hàng nếu có
       if (req.authUser) {
-        const id_user = req.authUser?._id;
-        data.id_user_oder = id_user.toString();
+        data.id_user_oder = req.authUser._id.toString();
       }
 
       // Tạo đơn hàng
       const cart = await cartOderModel.create(data);
+      if (!cart) throw new Error("Không thể tạo đơn hàng");
 
-      if (cart) {
-        const products = data.carts;
-        const ids = products.map((product) => ({
-          _id: product._id,
-          quantity: product.quantity,
-        }));
-        console.log(ids);
+      const { carts, selectedDiscountCodes = [] } = data;
 
-        // Sử dụng Promise.all để chờ tất cả các cập nhật hoàn thành
-        const updatePromises = ids.map(async (element) => {
-          const productId = new mongoose.Types.ObjectId(element._id);
-          console.log(productId);
-          const product = await productModel.findById(productId);
-          if (!product) {
-            throw new Error("Sản phẩm không tồn tại");
-          }
-
-          // Kiểm tra xem số lượng còn lại có đủ không
-          if (product.quantity < element.quantity) {
-            throw new Error("Không đủ số lượng trong kho");
-          }
-
-          // Giảm số lượng sản phẩm
-          const newQuantity = product.stock - element.quantity;
-          return productModel.findByIdAndUpdate(
-            productId,
-            { stock: newQuantity },
-            { new: true }
+      // Chuẩn bị các thao tác cập nhật
+      const discountUpdatePromises = selectedDiscountCodes.map(async (code) => {
+        const discountCode = await discountcodeModel.findOne({ code });
+        if (discountCode && discountCode.usageLimit > 0) {
+          return discountcodeModel.updateOne(
+            { code },
+            { $inc: { usageLimit: -1 } }
           );
-        });
+        } else {
+          throw new Error(`Mã giảm giá ${code} đã hết lượt sử dụng`);
+        }
+      });
 
-        // Chờ cho tất cả các promise hoàn thành
-        await Promise.all(updatePromises);
+      const stockUpdatePromises = carts.map(async ({ _id, quantity }) => {
+        const product = await productModel.findById(_id);
+        if (!product) throw new Error(`Sản phẩm với ID ${_id} không tồn tại`);
+        if (product.stock < quantity) {
+          throw new Error(`Sản phẩm ${product.name} không đủ số lượng`);
+        }
+        return productModel.findByIdAndUpdate(
+          _id,
+          { $inc: { stock: -quantity } },
+          { new: true }
+        );
+      });
 
-        // Gửi phản hồi thành công
-        res.status(201).json({
-          data: cart,
-          status_code: 201,
-          errors: [],
-        });
+      // Chờ các cập nhật hoàn tất
+      await Promise.all([...discountUpdatePromises, ...stockUpdatePromises]);
 
-        // Gửi email xác nhận đơn hàng
-        sendOrderConfirmationEmail(cart.gmail, cart);
-      }
+      res.status(201).json({
+        data: cart,
+        status_code: 201,
+        errors: [],
+      });
+
+      // Gửi email xác nhận đơn hàng nếu cần
+      // await sendOrderConfirmationEmail(cart.gmail, cart);
     } catch (error) {
-      console.error("Error creating cart order:", error);
-      res.status(500).json({
+      console.error("Error creating cart order:", error.message);
+      res.status(error.message.includes("số lượng") ? 400 : 500).json({
         error: {
-          message: error.message,
+          message: error.message.includes("số lượng")
+            ? error.message
+            : "Đã xảy ra lỗi khi tạo đơn hàng. Vui lòng thử lại sau.",
         },
       });
     }
@@ -86,7 +82,7 @@ export default class CartOderController {
       res.json(error);
     }
   }
-  s;
+
   async update(req, res) {
     try {
       const data = req.body;

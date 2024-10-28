@@ -35,10 +35,9 @@ io.on("connection", (socket) => {
       ...cmt,
       timestamp: new Date().toISOString(),
     };
-
-    socket.broadcast.emit("comments", commentWithTimestamp);
+    io.emit("comments", commentWithTimestamp);
   });
-  
+
   socket.on("cart", (cart) => {
     const cartWithTimestamp = {
       ...cart,
@@ -54,3 +53,4 @@ io.on("connection", (socket) => {
 server.listen(5050, () => {
   console.log("server listening on port 5050");
 });
+export { io };
