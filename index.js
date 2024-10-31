@@ -23,6 +23,7 @@ router(app);
 app.use(express.static("storage/user"));
 
 io.on("connection", (socket) => {
+  // mess
   socket.on("message", (msg) => {
     const messageWithTimestamp = {
       ...msg,
@@ -30,6 +31,8 @@ io.on("connection", (socket) => {
     };
     socket.broadcast.emit("message", messageWithTimestamp);
   });
+
+  // comments
   socket.on("comments", (cmt) => {
     const commentWithTimestamp = {
       ...cmt,
@@ -38,6 +41,7 @@ io.on("connection", (socket) => {
     io.emit("comments", commentWithTimestamp);
   });
 
+  // cart
   socket.on("cart", (cart) => {
     const cartWithTimestamp = {
       ...cart,

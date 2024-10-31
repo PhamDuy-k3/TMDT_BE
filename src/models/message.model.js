@@ -12,6 +12,11 @@ const messageSchema = new Schema({
     type: String,
     required: true,
   },
+  type: {
+    type: String,
+    required: true,
+    enum: ["text", "image", "video", "audio"],
+  },
   timestamp: {
     type: Date,
     default: Date.now,

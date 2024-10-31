@@ -31,10 +31,15 @@ export default class ChatController {
   }
 
   async createMessInRoom(req, res) {
-    const { chatRoomId, sender, content } = req.body;
+    const { type, chatRoomId, sender, content } = req.body;
 
     try {
-      const message = await Message.create({ sender, content, chatRoomId });
+      const message = await Message.create({
+        type,
+        sender,
+        content,
+        chatRoomId,
+      });
 
       const chatRoom = await ChatRoom.findById(chatRoomId);
       if (!chatRoom) {
@@ -93,7 +98,7 @@ export default class ChatController {
   }
   async getRoomAdmin(req, res) {
     try {
-      const {user_id} = req.query;
+      const { user_id } = req.query;
 
       const condition = {};
 

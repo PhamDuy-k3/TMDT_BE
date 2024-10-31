@@ -22,6 +22,22 @@ export default class CommentController {
       });
     }
   }
+  async delete(req, res) {
+    try {
+      const { commentId } = req.params;
+      const result = await commentModel.delete(commentId);
+      res.json({
+        status_code: 200,
+        data: result,
+      });
+    } catch (error) {
+      res.json({
+        error: {
+          message: error.message,
+        },
+      });
+    }
+  }
   async index(req, res) {
     try {
       const { productId } = req.query;
@@ -35,6 +51,25 @@ export default class CommentController {
         data: comments,
         status_code: 200,
         errors: [],
+      });
+    } catch (error) {
+      res.json({
+        error: {
+          message: error.message,
+        },
+      });
+    }
+  }
+  async update(req, res) {
+    try {
+      const { commentId } = req.params;
+      const data = req.body;
+      const result = await commentModel.findByIdAndUpdate(commentId, data, {
+        new: true,
+      });
+      res.json({
+        data: result,
+        status_code: 200,
       });
     } catch (error) {
       res.json({

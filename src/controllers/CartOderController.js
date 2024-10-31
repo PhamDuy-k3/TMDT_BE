@@ -107,6 +107,13 @@ export default class CartOderController {
         data: cartOrderUpdate,
         status_code: 200,
       });
+
+      if (data.status === "confirmed") {
+        const socketId = cartOrder.id_user_oder;
+        if (socketId) {
+          io.emit("orderConfirmedNotification", cartOrderUpdate);
+        }
+      }
     } catch (error) {
       console.error("Error updating cart order:", error);
       res.status(500).json({

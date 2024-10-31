@@ -15,5 +15,13 @@ export const commentRouter = (app) => {
     commentController.create
   );
   router.get("/", AuthMiddleware, commentController.index);
+  router.put(
+    "/:commentId",
+    uploadImage.single("image"),
+    AuthMiddleware,
+    commentController.update
+  );
+  router.delete("/:commentId", AuthMiddleware, commentController.index);
+
   app.use("/comments", router);
 };
