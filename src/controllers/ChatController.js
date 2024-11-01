@@ -4,8 +4,9 @@ import Message from "../models/message.model.js";
 export default class ChatController {
   // Định nghĩa phương thức create
   async create(req, res) {
-    const adminId = req.body;
+    const data = req.body;
     const userId = req.authUser?._id.toString();
+    const adminId = data.admin_Id;
     try {
       const chatRoom = await ChatRoom.create({ userId, adminId });
       res.status(201).json({
@@ -18,7 +19,8 @@ export default class ChatController {
   }
   async admin_create(req, res) {
     const adminId = req.authUser?._id.toString();
-    const userId = req.body;
+    const data = req.body;
+    const userId = data.user_id;
     try {
       const chatRoom = await ChatRoom.create({ userId, adminId });
       res.status(201).json({

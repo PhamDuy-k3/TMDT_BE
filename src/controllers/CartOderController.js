@@ -128,15 +128,12 @@ export default class CartOderController {
     try {
       const { status, startDate, endDate } = req.query;
 
-      const id_user_oder = req.authUser?._id.toString();
       const conditions = {};
-      // Lọc theo ID người dùng
-      if (id_user_oder) {
-        conditions.id_user_oder = id_user_oder;
-      }
+
       if (status) {
         conditions.status = status;
       }
+      // console.log(new Date(startDate).setHours(0, 0, 0, 0))
 
       // Lọc theo khoảng thời gian
       if (startDate && endDate) {
