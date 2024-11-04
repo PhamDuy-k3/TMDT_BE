@@ -22,10 +22,10 @@ export default class DiscountcodeController {
     try {
       const { selectedDiscountCodes } = req.query;
       const conditions = {};
-      if (selectedDiscountCodes) {
-        const arrayCodes = selectedDiscountCodes.split(","); // chuyển chuỗi thành mảng
-        conditions.code = { $in: arrayCodes };
-      }
+      // if (selectedDiscountCodes) {
+      //   const arrayCodes = selectedDiscountCodes.split(",");
+      //   conditions.code = { $in: arrayCodes };
+      // }
       conditions.usageLimit = { $gt: 0 };
 
       const discountcodeModels = await discountcodeModel.find(conditions);

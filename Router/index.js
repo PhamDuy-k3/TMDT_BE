@@ -9,6 +9,7 @@ import { discountcodeRouter } from "./discountcode_router.js";
 import { commentRouter } from "./comment_router.js";
 import { paymentRouter } from "./payment_router.js";
 import { ChatRouter } from "./chat_router.js";
+import { UserVoucherRouter } from "./user_voucher.js";
 export const router = (app) => {
   userRouter(app);
   productRouter(app);
@@ -21,4 +22,5 @@ export const router = (app) => {
   commentRouter(app);
   paymentRouter(app);
   ChatRouter(app);
+  UserVoucherRouter(app);
 };
