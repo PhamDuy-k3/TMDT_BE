@@ -40,12 +40,17 @@ export default class CommentController {
   }
   async index(req, res) {
     try {
-      const { productId } = req.query;
+      const { productId, rating } = req.query;
       const conditions = {};
       if (productId) {
         conditions.productId = productId;
       }
-
+      if (rating != 0) {
+        conditions.rating = { $eq: rating };
+      }
+      if (rating === 0) {
+        conditions.rating = { $gt: rating };
+      }
       const comments = await commentModel.find(conditions);
       res.json({
         data: comments,

@@ -31,7 +31,12 @@ io.on("connection", (socket) => {
     };
     socket.broadcast.emit("message", messageWithTimestamp);
   });
-
+  socket.on("messloading", (value) => {
+    socket.broadcast.emit("messloading", value);
+  });
+  socket.on("messloadingCompelete", (value) => {
+    socket.broadcast.emit("messloadingCompelete", value);
+  });
   // comments
   socket.on("comments", (cmt) => {
     const commentWithTimestamp = {
