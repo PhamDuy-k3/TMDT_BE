@@ -57,6 +57,11 @@ const discountcodeModel = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    stock: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
   },
   {
     toJSON: { getters: true },
@@ -66,5 +71,5 @@ const discountcodeModel = new mongoose.Schema(
 export default mongoose.model(
   "DiscountcodeModel",
   discountcodeModel,
-  "discountcodeModels"
+  "discountcodes"
 );

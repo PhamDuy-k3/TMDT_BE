@@ -46,6 +46,7 @@ export default class UserVoucherController {
   async index(req, res) {
     try {
       const userId = req.authUser?._id.toString();
+      const conditions = {};
 
       if (!userId) {
         return res.status(400).json({
@@ -54,9 +55,11 @@ export default class UserVoucherController {
           },
         });
       }
-      const existingVouchers = await User_vouchers.find({
-        user_id: userId,
-      });
+      conditions.user_id = userId;
+      conditions.quantity = { $gt: 0 };
+      const existingVouchers = await User_vouchers.find(conditions).populate(
+        "voucher_id"
+      );
 
       if (!existingVouchers.length) {
         return res.status(404).json({

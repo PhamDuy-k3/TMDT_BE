@@ -1,26 +1,24 @@
 import mongoose from "mongoose";
 
-const userVoucherSchema = mongoose.Schema(
+const userVoucherModel = mongoose.Schema(
   {
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-
     voucher_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "DiscountcodeModel",
       required: true,
       unique: true,
     },
+    quantity: {
+      type: Number,
+      required: true,
+    },
     received_date: { type: Date, default: Date.now },
     used_date: { type: Date },
-    status: {
-      type: String,
-      enum: ["unused", "used", "expired"],
-      default: "unused",
-    },
   },
   {
     timestamps: true,
@@ -29,6 +27,6 @@ const userVoucherSchema = mongoose.Schema(
 
 export default mongoose.model(
   "User_vouchers",
-  userVoucherSchema,
+  userVoucherModel,
   "user_vouchers"
 );

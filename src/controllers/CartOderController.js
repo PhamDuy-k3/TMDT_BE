@@ -1,11 +1,12 @@
 import { console } from "node:inspector";
 import cartOderModel from "../models/cartOder.model.js";
 import productModel from "../models/product.model.js";
+
 import sendOrderConfirmationEmail from "../utils/orderEmail.js";
-import crypto from "node:crypto";
-import mongoose from "mongoose";
 import { io } from "../../index.js";
 import discountcodeModel from "../models/discountcode.model.js";
+import User_vouchers from "../models/user_voucher.model.js";
+import { abort } from "node:process";
 const confirmationTokens = {};
 
 export default class CartOderController {
@@ -22,22 +23,38 @@ export default class CartOderController {
 
       const { carts, selectedDiscountCodes = [] } = data;
 
-      // Chuẩn bị các thao tác cập nhật
+      // Chuẩn bị các thao tác cập nhật mã giảm giá
       const discountUpdatePromises = selectedDiscountCodes.map(async (code) => {
+        //giảm số lượng voucher trong kho
         const discountCode = await discountcodeModel.findOne({ code });
-        if (discountCode && discountCode.usageLimit > 0) {
-          return discountcodeModel.updateOne(
-            { code },
-            { $inc: { usageLimit: -1 } }
+        if (!discountCode) {
+          throw new Error(`Mã giảm giá ${code} không hợp lệ`);
+        }
+        if (discountCode.stock > 0) {
+          await discountcodeModel.updateOne(
+            { code: code },
+            { $inc: { stock: -1 } }
           );
-        } else {
-          throw new Error(`Mã giảm giá ${code} đã hết lượt sử dụng`);
+        }
+        // giảm số lượng dùng voucher của user
+        const _id = discountCode._id;
+        const voucher_user = await User_vouchers.findOne({
+          voucher_id: _id,
+        });
+        if (voucher_user && voucher_user.quantity > 0) {
+          await User_vouchers.updateOne(
+            { voucher_id: _id },
+            { $inc: { quantity: -1 } }
+          );
         }
       });
 
+      // Chuẩn bị các thao tác cập nhật sản phẩm
       const stockUpdatePromises = carts.map(async ({ _id, quantity }) => {
         const product = await productModel.findById(_id);
-        if (!product) throw new Error(`Sản phẩm với ID ${_id} không tồn tại`);
+        if (!product) {
+          throw new Error(`Sản phẩm với ID ${_id} không tồn tại`);
+        }
         if (product.stock < quantity) {
           throw new Error(`Sản phẩm ${product.name} không đủ số lượng`);
         }
@@ -51,6 +68,7 @@ export default class CartOderController {
       // Chờ các cập nhật hoàn tất
       await Promise.all([...discountUpdatePromises, ...stockUpdatePromises]);
 
+      // Trả về kết quả thành công
       res.status(201).json({
         data: cart,
         status_code: 201,
