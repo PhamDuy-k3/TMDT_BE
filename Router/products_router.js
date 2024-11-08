@@ -19,6 +19,8 @@ export const productRouter = (app) => {
   router.get("/", productController.index);
 
   router.get("/admin", productController.indexAdmin);
+  
+  router.get("/carts", productController.getProductsInCarts);
 
   router.get("/:productId", AuthMiddleware, productController.show);
 

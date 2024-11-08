@@ -300,4 +300,26 @@ export default class ProductController {
       });
     }
   }
+  async getProductsInCarts(req, res) {
+    try {
+      const { ids } = req.query;
+      const conditions = {};
+      if (ids) {
+        const array_id = ids.split(",");
+        conditions._id = { $in: array_id };
+      }
+      const discountcodeModels = await productModel.find(conditions);
+
+      res.json({
+        status_code: 200,
+        data: discountcodeModels,
+      });
+    } catch (error) {
+      res.json({
+        error: {
+          message: error.message,
+        },
+      });
+    }
+  }
 }

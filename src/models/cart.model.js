@@ -16,6 +16,9 @@ const cartModel = mongoose.Schema({
     type: String,
     required: true,
   },
+  discount_code: {
+    type: String,
+  },
   quantity: {
     type: Number,
     required: true,
