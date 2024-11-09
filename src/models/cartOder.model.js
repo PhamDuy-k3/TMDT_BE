@@ -1,9 +1,13 @@
 import mongoose from "mongoose";
 
 const cartOderModel = mongoose.Schema({
+  orderId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   carts: {
     type: Array,
-    required: true,
   },
   status: {
     type: String,
