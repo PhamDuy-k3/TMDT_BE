@@ -11,6 +11,11 @@ const cartModel = mongoose.Schema({
   },
   id_user: {
     type: mongoose.Schema.Types.Mixed,
+    required: true,
+  },
+  product_id: {
+    type: mongoose.Schema.Types.Mixed,
+    required: true,
   },
   color: {
     type: String,
@@ -18,6 +23,7 @@ const cartModel = mongoose.Schema({
   },
   discount_code: {
     type: String,
+    default: "0",
   },
   quantity: {
     type: Number,
@@ -32,8 +38,7 @@ const cartModel = mongoose.Schema({
     required: true,
   },
   sum: {
-    type: String,
-    required: true,
+    type: Number,
   },
   image: {
     type: String,

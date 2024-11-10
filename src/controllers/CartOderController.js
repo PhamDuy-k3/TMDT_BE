@@ -50,16 +50,18 @@ export default class CartOderController {
       });
 
       // Chuẩn bị các thao tác cập nhật sản phẩm
-      const stockUpdatePromises = carts.map(async ({ _id, quantity }) => {
-        const product = await productModel.findById(_id);
+      const stockUpdatePromises = carts.map(async (cart) => {
+        const id_product = cart.product_id;
+        const quantity = cart.quantity;
+        const product = await productModel.findById({ _id: id_product });
         if (!product) {
-          throw new Error(`Sản phẩm với ID ${_id} không tồn tại`);
+          throw new Error(`Sản phẩm với ID ${id_product} không tồn tại`);
         }
         if (product.stock < quantity) {
           throw new Error(`Sản phẩm ${product.name} không đủ số lượng`);
         }
         return productModel.findByIdAndUpdate(
-          _id,
+          { _id: id_product },
           { $inc: { stock: -quantity } },
           { new: true }
         );

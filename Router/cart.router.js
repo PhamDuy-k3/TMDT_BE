@@ -34,6 +34,11 @@ export const cartRouter = (app) => {
   );
 
   router.put("/:cartId", uploadImage.single("image"), cartController.update);
+  router.put(
+    "/updateInfor/cart",
+    uploadImage.single("image"),
+    cartController.updateInfor
+  );
 
   app.use("/carts", router);
 };

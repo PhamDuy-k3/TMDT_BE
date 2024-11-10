@@ -47,6 +47,41 @@ export default class CartController {
       });
     }
   }
+  async updateInfor(req, res) {
+    try {
+      const data = req.body;
+      const file = req.file;
+
+      if (file) {
+        data.image = file.filename;
+      }
+
+      const { cart_id } = req.query;
+
+      const cart = await cartModel.findById(cart_id);
+      if (!cart) {
+        throw new Error("Cart không tồn tại!");
+      }
+      if (cart) {
+        const cartUpdate = await cartModel.findOneAndUpdate(
+          { _id: cart_id },
+          data,
+          { new: true }
+        );
+
+        res.json({
+          data: cartUpdate,
+          status_code: 200,
+        });
+      }
+    } catch (error) {
+      res.json({
+        error: {
+          message: error.message,
+        },
+      });
+    }
+  }
   async delete(req, res) {
     try {
       const result = await cartModel.deleteMany({});

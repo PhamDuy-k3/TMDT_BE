@@ -21,13 +21,13 @@ export default class PaymentController {
       const accessKey = "F8BBA842ECF85";
       const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
       const partnerCode = "MOMO";
-      const redirectUrl = "http://localhost:3000/#/CartOder"; // URL chuyển hướng sau thanh toán
+      const redirectUrl = "http://localhost:3000/#/CartOder";
       const ipnUrl =
-        "https://8314-116-96-46-173.ngrok-free.app/payment/callBack";
-      const requestType = "payWithMethod"; // Phương thức thanh toán
-      const orderId = partnerCode + new Date().getTime(); // Tạo orderId
+        "https://cb00-116-96-46-173.ngrok-free.app/payment/callBack";
+      const requestType = "payWithMethod";
+      const orderId = partnerCode + new Date().getTime();
       const requestId = orderId;
-      const extraData = ""; // Thêm các dữ liệu tùy chọn khác nếu cần thiết
+      const extraData = "";
       const orderGroupId = "";
       const autoCapture = true;
       const lang = "vi";
