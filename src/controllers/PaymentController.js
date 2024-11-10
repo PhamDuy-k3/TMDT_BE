@@ -21,9 +21,9 @@ export default class PaymentController {
       const accessKey = "F8BBA842ECF85";
       const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
       const partnerCode = "MOMO";
-      const redirectUrl = "http://localhost:3000/"; // URL chuyển hướng sau thanh toán
+      const redirectUrl = "http://localhost:3000/#/CartOder"; // URL chuyển hướng sau thanh toán
       const ipnUrl =
-        "https://1cc1-116-96-46-173.ngrok-free.app/payment/callBack";
+        "https://8314-116-96-46-173.ngrok-free.app/payment/callBack";
       const requestType = "payWithMethod"; // Phương thức thanh toán
       const orderId = partnerCode + new Date().getTime(); // Tạo orderId
       const requestId = orderId;
@@ -115,13 +115,14 @@ export default class PaymentController {
       if (order) {
         if (resultCode === 0) {
           // Thanh toán thành công
-          order.status = "confirmed";
+          order.paymentStatus = "paid";
+          order.status = "processing";
           order.confirmedAt = new Date();
           await order.save();
           res.status(200).json({ message: "Payment successful" });
         } else {
           // Thanh toán thất bại
-          order.status = "cancel";
+          order.paymentStatus = "unpaid";
           await order.save();
           res.status(400).json({ message: "Payment failed" });
         }

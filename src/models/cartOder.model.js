@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 const cartOderModel = mongoose.Schema({
   orderId: {
     type: String,
-    required: true,
     unique: true,
   },
   carts: {
@@ -22,6 +21,16 @@ const cartOderModel = mongoose.Schema({
     ],
     required: true,
     default: "unconfirmed",
+  },
+  paymentStatus: {
+    type: String,
+    enum: [
+      "unpaid", // Chưa thanh toán
+      "paid", // Đã thanh toán
+      "refunded", // Đã hoàn tiền
+    ],
+    required: true,
+    default: "unpaid",
   },
   id_user_oder: {
     type: String,
