@@ -7,6 +7,7 @@ import { io } from "../../index.js";
 import discountcodeModel from "../models/discountcode.model.js";
 import User_vouchers from "../models/user_voucher.model.js";
 import { abort } from "node:process";
+import Variant from "../models/variants.model.js";
 const confirmationTokens = {};
 
 export default class CartOderController {
@@ -16,7 +17,6 @@ export default class CartOderController {
       if (req.authUser) {
         data.id_user_oder = req.authUser._id.toString();
       }
-
       // Tạo đơn hàng
       const cart = await cartOderModel.create(data);
       if (!cart) throw new Error("Không thể tạo đơn hàng");
@@ -51,20 +51,45 @@ export default class CartOderController {
 
       // Chuẩn bị các thao tác cập nhật sản phẩm
       const stockUpdatePromises = carts.map(async (cart) => {
-        const id_product = cart.product_id;
-        const quantity = cart.quantity;
-        const product = await productModel.findById({ _id: id_product });
+        const { product_id, quantity, size, color } = cart;
+
+        // Find the product and variants
+        const product = await productModel.findById({ _id: product_id });
+        const variants = await Variant.find({ product_id });
+
         if (!product) {
-          throw new Error(`Sản phẩm với ID ${id_product} không tồn tại`);
+          throw new Error(`Sản phẩm với ID ${product_id} không tồn tại`);
         }
-        if (product.stock < quantity) {
-          throw new Error(`Sản phẩm ${product.name} không đủ số lượng`);
+
+        let variant = null;
+
+        if (size && color) {
+          variant = variants.find(
+            (variant) => variant.color === color && variant.size === size
+          );
+        } else if (!size && color) {
+          variant = variants.find((variant) => variant.color === color);
         }
-        return productModel.findByIdAndUpdate(
-          { _id: id_product },
-          { $inc: { stock: -quantity } },
+
+        if (variant) {
+          variant.quantity -= quantity;
+          await variant.save();
+        } else {
+          throw new Error(
+            `Không tìm thấy variant với màu ${color} và size ${size}`
+          );
+        }
+
+        // Update the product stock by decreasing the quantity
+        await productModel.findByIdAndUpdate(
+          { _id: product_id },
+          {
+            $inc: { stock: -quantity }, // Decrement the product stock
+          },
           { new: true }
         );
+
+        return product;
       });
 
       // Chờ các cập nhật hoàn tất
@@ -80,14 +105,7 @@ export default class CartOderController {
       // Gửi email xác nhận đơn hàng nếu cần
       // await sendOrderConfirmationEmail(cart.gmail, cart);
     } catch (error) {
-      console.error("Error creating cart order:", error.message);
-      res.status(error.message.includes("số lượng") ? 400 : 500).json({
-        error: {
-          message: error.message.includes("số lượng")
-            ? error.message
-            : "Đã xảy ra lỗi khi tạo đơn hàng. Vui lòng thử lại sau.",
-        },
-      });
+      res.json(error);
     }
   }
 

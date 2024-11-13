@@ -29,7 +29,6 @@ const productModel = mongoose.Schema(
     ],
     stock: {
       type: Number,
-      required: true,
     },
     image: {
       type: String,

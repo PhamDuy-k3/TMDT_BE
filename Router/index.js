@@ -10,6 +10,8 @@ import { commentRouter } from "./comment_router.js";
 import { paymentRouter } from "./payment_router.js";
 import { ChatRouter } from "./chat_router.js";
 import { UserVoucherRouter } from "./user_voucher.js";
+import { SizeRouter } from "./size.router.js";
+import { VariantRouter } from "./variant.router.js";
 export const router = (app) => {
   userRouter(app);
   productRouter(app);
@@ -23,4 +25,6 @@ export const router = (app) => {
   paymentRouter(app);
   ChatRouter(app);
   UserVoucherRouter(app);
+  SizeRouter(app);
+  VariantRouter(app);
 };

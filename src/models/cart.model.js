@@ -35,7 +35,6 @@ const cartModel = mongoose.Schema({
   },
   size: {
     type: String,
-    required: true,
   },
   sum: {
     type: Number,

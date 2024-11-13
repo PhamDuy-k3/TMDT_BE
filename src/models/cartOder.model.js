@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 const cartOderModel = mongoose.Schema({
   orderId: {
     type: String,
-    unique: true,
   },
   carts: {
     type: Array,
@@ -29,7 +28,6 @@ const cartOderModel = mongoose.Schema({
       "paid", // Đã thanh toán
       "refunded", // Đã hoàn tiền
     ],
-    required: true,
     default: "unpaid",
   },
   id_user_oder: {

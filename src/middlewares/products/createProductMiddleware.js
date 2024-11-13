@@ -21,6 +21,9 @@ export default function CreateProductMiddleware(req, res, next) {
       "string.min": "Discount không được thấp hơn {{#limit}} ký tự.",
       "any.required": "Vui lòng nhập Discount của bạn.",
     }),
+    variants: Joi.string().messages({
+      "array.base": "Sizes phải là một chuỗi",
+    }),
     category_id: Joi.string().messages({
       "number.base": "category_id là 1 chuoi.",
       "any.required": "Vui lòng chọn category_id.",
