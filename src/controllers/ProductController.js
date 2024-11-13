@@ -8,26 +8,6 @@ export default class ProductController {
       if (file) {
         data.image = file.filename;
       }
-      if (data.variants) {
-        try {
-          const variants = JSON.parse(data.variants);
-          data.variants = variants;
-
-          const stock = variants.reduce((acc, variant) => {
-            const sizeQuantity = variant.sizes.reduce(
-              (sizeAcc, size) => sizeAcc + size.quantity,
-              0
-            );
-            return acc + sizeQuantity;
-          }, 0);
-          data.stock = stock;
-        } catch (err) {
-          return res
-            .status(400)
-            .json({ message: "Sizes phải là JSON hợp lệ." });
-        }
-      }
-      console.log(data);
       const product = await productModel.create(data);
       res.json({
         data: product,

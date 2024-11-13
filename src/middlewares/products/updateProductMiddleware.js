@@ -24,6 +24,7 @@ export default function UpdateProductMiddleware(req, res, next) {
     category_id: Joi.string().messages({
       "number.base": "category_id là 1 số.",
     }),
+
     brand_id: Joi.string().messages({
       "number.base": "brand_id là 1 số.",
     }),
