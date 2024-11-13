@@ -106,7 +106,7 @@ export default class AuthController {
 
         // Gửi email sau khi trả về kết quả (không chờ email gửi xong)
         userServices
-          .sendEmail(data.email, data.verificationCode)
+          .sendEmail(data.email, data.verificationCode, res)
           .then(() => {
             console.log("Email đã gửi thành công");
           })

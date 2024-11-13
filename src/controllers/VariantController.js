@@ -4,16 +4,23 @@ export default class VariantController {
   async create(req, res) {
     try {
       const data = req.body;
-      const Variants = await Variant.create(data);
-      res.json(Variants);
+      const variant = await Variant.create(data);
+
+      if (!variant) {
+        return res
+          .status(400)
+          .json({ error: { message: "Không thể tạo biến thể" } });
+      }
+      res.status(200).json(variant);
     } catch (error) {
-      res.json({
+      res.status(500).json({
         error: {
-          message: error.message,
+          message: error.message || "Đã xảy ra lỗi máy chủ",
         },
       });
     }
   }
+
   //   async show(req, res) {
   //     try {
   //       const { VariantId } = req.params;

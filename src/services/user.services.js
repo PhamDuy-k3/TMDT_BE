@@ -64,7 +64,7 @@ export class UserService {
     };
   }
 
-  async sendEmail(email, code) {
+  async sendEmail(email, code, res) {
     try {
       await sendCodeToEmail(email, code);
       res.status(200).json({
