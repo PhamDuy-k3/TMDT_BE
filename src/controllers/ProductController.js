@@ -4,16 +4,20 @@ export default class ProductController {
   async create(req, res) {
     try {
       const data = req.body;
-      const file = req.file;
-      if (file) {
-        data.image = file.filename;
+      const files = req.files;
+      if (files) {
+        const images = files.map((file) => {
+          return file.filename;
+        });
+        data.images = images;
+
+        const product = await productModel.create(data);
+        res.json({
+          data: product,
+          status_code: 200,
+          errors: [],
+        });
       }
-      const product = await productModel.create(data);
-      res.json({
-        data: product,
-        status_code: 200,
-        errors: [],
-      });
     } catch (error) {
       res.json(error);
     }

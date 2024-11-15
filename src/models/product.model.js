@@ -30,14 +30,16 @@ const productModel = mongoose.Schema(
     stock: {
       type: Number,
     },
-    image: {
-      type: String,
-      get: function (image) {
-        if (image) {
-          return "http://localhost:5050/" + image;
-        }
+    images: [
+      {
+        type: String,
+        get: function (images) {
+          if (images) {
+            return "http://localhost:5050/" + images;
+          }
+        },
       },
-    },
+    ],
   },
   {
     toJSON: { getters: true },

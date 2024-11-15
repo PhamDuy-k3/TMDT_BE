@@ -5,7 +5,6 @@ export default class UserVoucherController {
     try {
       const data = req.body;
       const userId = req.authUser?._id.toString();
-
       if (!userId) {
         return res.status(400).json({
           error: {
@@ -16,7 +15,6 @@ export default class UserVoucherController {
 
       data.user_id = userId;
       const id_voucher = data.voucher_id;
-
       const existingVoucher = await User_vouchers.findOne({
         user_id: userId,
         voucher_id: id_voucher,
@@ -29,7 +27,6 @@ export default class UserVoucherController {
           },
         });
       }
-
       const user_vouchers = await User_vouchers.create(data);
 
       return res.status(201).json({

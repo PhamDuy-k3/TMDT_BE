@@ -11,7 +11,6 @@ const userVoucherModel = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "DiscountcodeModel",
       required: true,
-      unique: true,
     },
     quantity: {
       type: Number,

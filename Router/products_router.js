@@ -8,18 +8,18 @@ export const productRouter = (app) => {
   const router = express.Router();
   const productController = new ProductController();
 
-  router.use(AuthMiddleware);
+ // router.use(AuthMiddleware);
 
   router.post(
     "/",
-    uploadImage.single("image"),
+    uploadImage.array("image", 5),
     CreateProductMiddleware,
     productController.create
   );
   router.get("/", productController.index);
 
   router.get("/admin", productController.indexAdmin);
-  
+
   router.get("/carts", productController.getProductsInCarts);
 
   router.get("/:productId", AuthMiddleware, productController.show);

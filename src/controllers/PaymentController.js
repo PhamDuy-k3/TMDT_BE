@@ -23,7 +23,7 @@ export default class PaymentController {
       const partnerCode = "MOMO";
       const redirectUrl = "http://localhost:3000/#/CartOder";
       const ipnUrl =
-        "https://cb00-116-96-46-173.ngrok-free.app/payment/callBack";
+        "https://d990-116-96-46-173.ngrok-free.app/payment/callBack";
       const requestType = "payWithMethod";
       const orderId = partnerCode + new Date().getTime();
       const requestId = orderId;
