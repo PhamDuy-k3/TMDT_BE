@@ -1,5 +1,5 @@
 import express from "express";
-import { uploadImage } from "../src/middlewares/multer/upload-image.middleware.js";
+import { uploadImageAndVideo } from "../src/middlewares/multer/upload-image.middleware.js";
 import ChatController from "../src/controllers/ChatController.js";
 import AuthMiddleware from "../src/middlewares/auth/auth.middleware.js";
 

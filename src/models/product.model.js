@@ -30,12 +30,23 @@ const productModel = mongoose.Schema(
     stock: {
       type: Number,
     },
+    isVisible: { type: Boolean, default: false },
     images: [
       {
         type: String,
         get: function (images) {
           if (images) {
             return "http://localhost:5050/" + images;
+          }
+        },
+      },
+    ],
+    videos: [
+      {
+        type: String,
+        get: function (videos) {
+          if (videos) {
+            return "http://localhost:5050/" + videos;
           }
         },
       },

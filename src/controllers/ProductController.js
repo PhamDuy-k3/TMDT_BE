@@ -4,24 +4,36 @@ export default class ProductController {
   async create(req, res) {
     try {
       const data = req.body;
-      const files = req.files;
-      if (files) {
-        const images = files.map((file) => {
-          return file.filename;
-        });
-        data.images = images;
+      const images = req.files["images"] || [];
+      const videos = req.files["videos"] || [];
 
-        const product = await productModel.create(data);
-        res.json({
-          data: product,
-          status_code: 200,
-          errors: [],
-        });
+      // Kiểm tra file bắt buộc
+      if (images.length === 0 || videos.length === 0) {
+        throw new Error("Images and videos are required");
       }
+
+      data.images = images.map((file) => file.filename);
+      data.videos = videos.map((file) => file.filename);
+
+      // Lưu sản phẩm vào database
+      const product = await productModel.create(data);
+
+      // Phản hồi thành công
+      res.json({
+        data: product,
+        status_code: 200,
+        errors: [],
+      });
     } catch (error) {
-      res.json(error);
+      // Phản hồi lỗi
+      res.status(400).json({
+        message: error.message || "An error occurred",
+        status_code: 400,
+        errors: [error],
+      });
     }
   }
+
   async delete(req, res) {
     try {
       const { productId } = req.params;
@@ -64,19 +76,47 @@ export default class ProductController {
   async update(req, res) {
     try {
       const data = req.body;
-      const file = req.file;
-      if (file) {
-        data.image = file.filename;
-      }
+      const images = req.files["images"] || [];
+      const videos = req.files["videos"] || [];
 
+      if (images.length > 0) {
+        data.images = images.map((file) => file.filename);
+      }
+      if (videos.length > 0) {
+        data.videos = videos.map((file) => file.filename);
+      }
       const { productId } = req.params;
       const product = await productModel.findById(productId);
       if (!product) {
         throw new Error("Product ko tồn tại");
       }
-      // if (product.name === data.name) {
-      //   delete data.name;
-      // }
+      const productUpdate = await productModel.findByIdAndUpdate(
+        productId,
+        data,
+        {
+          new: true,
+        }
+      );
+      res.json({
+        data: productUpdate,
+        status_code: 200,
+      });
+    } catch (error) {
+      res.json({
+        error: {
+          message: error.message,
+        },
+      });
+    }
+  }
+  async updateIsVisible(req, res) {
+    try {
+      const data = req.body;
+      const { productId } = req.params;
+      const product = await productModel.findById(productId);
+      if (!product) {
+        throw new Error("Product ko tồn tại");
+      }
       const productUpdate = await productModel.findByIdAndUpdate(
         productId,
         data,
@@ -198,7 +238,7 @@ export default class ProductController {
         conditions.brand_id = { $in: idsBrand.split(",") };
       }
       conditions.stock = { $gt: 0 };
-
+      conditions.isVisible = true;
       let sortOption = {};
       if (sortOrder === "asc") {
         sortOption = { prices: 1 }; // sắp xếp tăng dần

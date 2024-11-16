@@ -1,7 +1,7 @@
 import express from "express";
 import CategoriesController from "../src/controllers/CategoriesController.js";
 import CreateCategoriesMiddleware from "../src/middlewares/categories/createCategoriesMiddleware.js";
-import { uploadImage } from "../src/middlewares/multer/upload-image.middleware.js";
+import { uploadImageAndVideo } from "../src/middlewares/multer/upload-image.middleware.js";
 export const categoriesRouter = (app) => {
   const router = express.Router();
 
@@ -9,7 +9,7 @@ export const categoriesRouter = (app) => {
 
   router.post(
     "/",
-    uploadImage.single("image"),
+    uploadImageAndVideo.single("image"),
     CreateCategoriesMiddleware,
     categoriesController.create
   );

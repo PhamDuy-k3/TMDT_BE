@@ -20,7 +20,9 @@ app.use(cors());
 connect();
 router(app);
 
-app.use(express.static("storage/user"));
+app.use(express.static("storage/images"));
+app.use(express.static("storage/videos"));
+
 
 io.on("connection", (socket) => {
   // mess

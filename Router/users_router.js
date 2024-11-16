@@ -2,7 +2,7 @@ import express from "express";
 import UserController from "../src/controllers/UserController.js";
 import CreateUserMiddleware from "../src/middlewares/users/createUserMiddleware.js";
 import UpdateUserMiddleware from "../src/middlewares/users/updateUserMiddleware.js";
-import { uploadImage } from "../src/middlewares/multer/upload-image.middleware.js";
+import { uploadImageAndVideo } from "../src/middlewares/multer/upload-image.middleware.js";
 import AuthMiddleware from "../src/middlewares/auth/auth.middleware.js";
 
 export const userRouter = (app) => {
@@ -13,7 +13,7 @@ export const userRouter = (app) => {
 
   router.post(
     "/",
-    uploadImage.single("avatar"),
+    uploadImageAndVideo.single("avatar"),
     CreateUserMiddleware,
     userController.create
   );
@@ -21,14 +21,14 @@ export const userRouter = (app) => {
 
   router.put(
     "/:userId",
-    uploadImage.single("avatar"),
+    uploadImageAndVideo.single("avatar"),
     UpdateUserMiddleware,
     userController.update
   );
 
   router.put(
     "/update/user",
-    uploadImage.single("avatar"),
+    uploadImageAndVideo.single("avatar"),
     UpdateUserMiddleware,
     userController.update_user
   );

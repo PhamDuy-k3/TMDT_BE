@@ -1,30 +1,50 @@
 import multer from "multer";
-//LÀ MỘT MIDDLEWARE CHO FILE
+import path from "path";
+import crypto from "crypto";
 
+// Cấu hình lưu trữ tệp tin với Multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, process.cwd() + "/storage/user"); //process.cwd() lấy đường dẫn  đến thư mục
-  }, //nơi luu tru
+    // Đặt thư mục lưu tệp tin
+    const uploadDir =
+      file.fieldname === "images"
+        ? "/storage/images"
+        : file.fieldname === "videos"
+        ? "/storage/videos"
+        : null;
+
+    if (uploadDir) {
+      cb(null, path.join(process.cwd(), uploadDir));
+    } else {
+      cb(new Error("Invalid field name"), false);
+    }
+  },
   filename: function (req, file, cb) {
-    // tạo file name mới cho ảnh để ko bị ghi đè
-    const uniquePrefix = Date.now() + "-" + Math.random(Math.random * 1e9);
-    cb(null, uniquePrefix + "-" + file.originalname);
+    const uniquePrefix = crypto.randomBytes(16).toString("hex");
+    cb(null, `${uniquePrefix}-${file.originalname}`);
   },
 });
 
-const fileFilter = function (req, file, cb) {
-  const allowMimes = ["image/jpeg", "image/png", "image/jpg"];
-  if (allowMimes.includes(file.mimetype)) {
+const fileFilter = (req, file, cb) => {
+  const allowedImageTypes = ["image/jpeg", "image/png"];
+  const allowedVideoTypes = ["video/mp4", "video/mpeg"];
+
+  const isImage =
+    file.fieldname === "images" && allowedImageTypes.includes(file.mimetype);
+  const isVideo =
+    file.fieldname === "videos" && allowedVideoTypes.includes(file.mimetype);
+
+  if (isImage || isVideo) {
     cb(null, true);
   } else {
-    cb(new Error("File type invalid"));
+    cb(new Error("Unsupported file type"), false);
   }
 };
 
-export const uploadImage = multer({
+export const uploadImageAndVideo = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, 
+    fileSize: 1024 * 1024 * 10, // Giới hạn kích thước file là 10MB
   },
 });

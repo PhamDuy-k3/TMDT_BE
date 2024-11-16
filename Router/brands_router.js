@@ -1,7 +1,7 @@
 import express from "express";
 import BrandController from "../src/controllers/BrandsController.js";
 import CreateBrandsMiddleware from "../src/middlewares/brands/createBrandsMiddleware.js";
-import { uploadImage } from "../src/middlewares/multer/upload-image.middleware.js";
+import { uploadImageAndVideo } from "../src/middlewares/multer/upload-image.middleware.js";
 import brandsModel from "../src/models/brands.model.js";
 
 export const brandsRouter = (app) => {
@@ -11,7 +11,7 @@ export const brandsRouter = (app) => {
 
   router.post(
     "/",
-    uploadImage.single("logo"),
+    uploadImageAndVideo.single("logo"),
     CreateBrandsMiddleware,
     brandsController.create
   );

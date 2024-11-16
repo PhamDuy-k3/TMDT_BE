@@ -1,5 +1,5 @@
 import express from "express";
-import { uploadImage } from "../src/middlewares/multer/upload-image.middleware.js";
+import { uploadImageAndVideo } from "../src/middlewares/multer/upload-image.middleware.js";
 import DiscountcodeController from "../src/controllers/DiscountcodeController.js";
 
 export const discountcodeRouter = (app) => {
@@ -9,7 +9,7 @@ export const discountcodeRouter = (app) => {
 
   router.post(
     "/",
-    uploadImage.single("logoShop"),
+    uploadImageAndVideo.single("logoShop"),
     discountcodeController.create
   );
   router.get("/", discountcodeController.index);

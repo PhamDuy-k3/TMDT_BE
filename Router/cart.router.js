@@ -1,5 +1,5 @@
 import express from "express";
-import { uploadImage } from "../src/middlewares/multer/upload-image.middleware.js";
+import { uploadImageAndVideo } from "../src/middlewares/multer/upload-image.middleware.js";
 import CartController from "../src/controllers/CartController.js";
 import AuthMiddleware from "../src/middlewares/auth/auth.middleware.js";
 
@@ -9,7 +9,7 @@ export const cartRouter = (app) => {
 
   router.post(
     "/",
-    uploadImage.single("image"),
+    uploadImageAndVideo.single("image"),
     AuthMiddleware,
     cartController.create
   );
@@ -33,10 +33,14 @@ export const cartRouter = (app) => {
     cartController.getCartsByUserIdAndIdProduct
   );
 
-  router.put("/:cartId", uploadImage.single("image"), cartController.update);
+  router.put(
+    "/:cartId",
+    uploadImageAndVideo.single("image"),
+    cartController.update
+  );
   router.put(
     "/updateInfor/cart",
-    uploadImage.single("image"),
+    uploadImageAndVideo.single("image"),
     cartController.updateInfor
   );
 

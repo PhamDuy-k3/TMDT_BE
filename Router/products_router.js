@@ -2,17 +2,20 @@ import express from "express";
 import ProductController from "../src/controllers/ProductController.js";
 import CreateProductMiddleware from "../src/middlewares/products/createProductMiddleware.js";
 import UpdateProductMiddleware from "../src/middlewares/products/updateProductMiddleware.js";
-import { uploadImage } from "../src/middlewares/multer/upload-image.middleware.js";
+import { uploadImageAndVideo } from "../src/middlewares/multer/upload-image.middleware.js";
 import AuthMiddleware from "../src/middlewares/auth/auth.middleware.js";
 export const productRouter = (app) => {
   const router = express.Router();
   const productController = new ProductController();
 
- // router.use(AuthMiddleware);
+   router.use(AuthMiddleware);
 
   router.post(
     "/",
-    uploadImage.array("image", 5),
+    uploadImageAndVideo.fields([
+      { name: "images", maxCount: 4 },
+      { name: "videos", maxCount: 1 },
+    ]),
     CreateProductMiddleware,
     productController.create
   );
@@ -28,10 +31,14 @@ export const productRouter = (app) => {
 
   router.put(
     "/:productId",
-    uploadImage.single("image"),
+    uploadImageAndVideo.fields([
+      { name: "images", maxCount: 4 },
+      { name: "videos", maxCount: 1 },
+    ]),
     UpdateProductMiddleware,
     productController.update
   );
+  router.put("/isVisible/:productId", productController.updateIsVisible);
   router.put(
     "/increaseLike/:productId",
     AuthMiddleware,

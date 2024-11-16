@@ -1,5 +1,5 @@
 import express from "express";
-import { uploadImage } from "../src/middlewares/multer/upload-image.middleware.js";
+import { uploadImageAndVideo } from "../src/middlewares/multer/upload-image.middleware.js";
 import CommentController from "../src/controllers/CommentController.js";
 import AuthMiddleware from "../src/middlewares/auth/auth.middleware.js";
 
@@ -10,14 +10,14 @@ export const commentRouter = (app) => {
 
   router.post(
     "/",
-    uploadImage.single("image"),
+    uploadImageAndVideo.single("image"),
     AuthMiddleware,
     commentController.create
   );
   router.get("/", AuthMiddleware, commentController.index);
   router.put(
     "/:commentId",
-    uploadImage.single("image"),
+    uploadImageAndVideo.single("image"),
     AuthMiddleware,
     commentController.update
   );
