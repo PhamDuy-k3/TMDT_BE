@@ -13,6 +13,7 @@ import { UserVoucherRouter } from "./user_voucher.js";
 import { SizeRouter } from "./size.router.js";
 import { VariantRouter } from "./variant.router.js";
 import { ShippingFeeRouter } from "./shippingfee.router.js";
+import { AddressRouter } from "./address.router.js";
 export const router = (app) => {
   userRouter(app);
   productRouter(app);
@@ -29,4 +30,5 @@ export const router = (app) => {
   SizeRouter(app);
   VariantRouter(app);
   ShippingFeeRouter(app);
+  AddressRouter(app);
 };

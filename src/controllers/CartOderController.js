@@ -8,6 +8,8 @@ import discountcodeModel from "../models/discountcode.model.js";
 import User_vouchers from "../models/user_voucher.model.js";
 import { abort } from "node:process";
 import Variant from "../models/variants.model.js";
+import { updateDiscountCodes } from "../utils/updateDiscountCodes.js";
+import { updateProductStock } from "../utils/updateProductStock.js";
 const confirmationTokens = {};
 
 export default class CartOderController {
@@ -23,78 +25,8 @@ export default class CartOderController {
 
       const { carts, selectedDiscountCodes = [] } = data;
 
-      // Chuẩn bị các thao tác cập nhật mã giảm giá
-      const discountUpdatePromises = selectedDiscountCodes.map(async (code) => {
-        //giảm số lượng voucher trong kho
-        const discountCode = await discountcodeModel.findOne({ code });
-        if (!discountCode) {
-          throw new Error(`Mã giảm giá ${code} không hợp lệ`);
-        }
-        if (discountCode.stock > 0) {
-          await discountcodeModel.updateOne(
-            { code: code },
-            { $inc: { stock: -1 } }
-          );
-        }
-        // giảm số lượng dùng voucher của user
-        const _id = discountCode._id;
-        const voucher_user = await User_vouchers.findOne({
-          voucher_id: _id,
-        });
-        if (voucher_user && voucher_user.quantity > 0) {
-          await User_vouchers.updateOne(
-            { voucher_id: _id },
-            { $inc: { quantity: -1 } }
-          );
-        }
-      });
-
-      // Chuẩn bị các thao tác cập nhật sản phẩm
-      const stockUpdatePromises = carts.map(async (cart) => {
-        const { product_id, quantity, size, color } = cart;
-
-        // Find the product and variants
-        const product = await productModel.findById({ _id: product_id });
-        const variants = await Variant.find({ product_id });
-
-        if (!product) {
-          throw new Error(`Sản phẩm với ID ${product_id} không tồn tại`);
-        }
-
-        let variant = null;
-
-        if (size && color) {
-          variant = variants.find(
-            (variant) => variant.color === color && variant.size === size
-          );
-        } else if (!size && color) {
-          variant = variants.find((variant) => variant.color === color);
-        }
-
-        if (variant) {
-          variant.quantity -= quantity;
-          await variant.save();
-        } else {
-          throw new Error(
-            `Không tìm thấy variant với màu ${color} và size ${size}`
-          );
-        }
-
-        // Update the product stock by decreasing the quantity
-        await productModel.findByIdAndUpdate(
-          { _id: product_id },
-          {
-            $inc: { stock: -quantity }, // Decrement the product stock
-          },
-          { new: true }
-        );
-
-        return product;
-      });
-
-      // Chờ các cập nhật hoàn tất
-      await Promise.all([...discountUpdatePromises, ...stockUpdatePromises]);
-
+      await updateDiscountCodes(selectedDiscountCodes);
+      await updateProductStock(carts);
       // Trả về kết quả thành công
       res.status(201).json({
         data: cart,

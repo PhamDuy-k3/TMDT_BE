@@ -4,8 +4,53 @@ const cartOderModel = mongoose.Schema({
   orderId: {
     type: String,
   },
+  id_user_oder: {
+    type: String,
+    required: true,
+  },
   carts: {
     type: Array,
+  },
+  shippingAddress: {
+    type: String,
+    required: true,
+  },
+  shippingFee: {
+    type: Number,
+    default: 0,
+  },
+  orderTotal: {
+    type: Number,
+    required: true,
+  },
+  selectedDiscountCodes: {
+    type: Array,
+    default: [],
+  },
+  note: {
+    type: String,
+  },
+  gmail: {
+    type: String,
+  },
+  paymentMethod: {
+    type: String,
+    enum: ["Momo", "Thanh toán khi nhận hàng"],
+    required: true,
+  },
+  paymentStatus: {
+    type: String,
+    enum: [
+      "unpaid", // Chưa thanh toán
+      "paid", // Đã thanh toán
+      "refunded", // Đã hoàn tiền
+    ],
+    default: "unpaid",
+  },
+  deliveryMethod: {
+    type: String,
+    enum: ["Hỏa tốc", "Nhanh", "Thường"],
+    default: "Thường",
   },
   status: {
     type: String,
@@ -21,43 +66,12 @@ const cartOderModel = mongoose.Schema({
     required: true,
     default: "unconfirmed",
   },
-  paymentStatus: {
-    type: String,
-    enum: [
-      "unpaid", // Chưa thanh toán
-      "paid", // Đã thanh toán
-      "refunded", // Đã hoàn tiền
-    ],
-    default: "unpaid",
-  },
-  id_user_oder: {
-    type: String,
-    required: true,
-  },
-  total_prices: {
-    type: Number,
-    required: true,
-  },
-  note: {
-    type: String,
-  },
-  selectedDiscountCodes: {
-    type: Array,
-    default: [],
-  },
-  gmail: {
-    type: String,
-  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
   confirmedAt: {
     type: Date,
-  },
-  address: {
-    type: String,
-    require: true,
   },
 });
 

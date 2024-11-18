@@ -41,7 +41,7 @@ function sendOrderConfirmationEmail(toEmail, orderDetails) {
       <p>Cảm ơn bạn đã đặt hàng!</p>
       <p>Đây là chi tiết đơn hàng của bạn:</p>
       ${itemsDetails}
-      <p><strong>Tổng số tiền:</strong> ${orderDetails.total_prices} VNĐ</p>
+      <p><strong>Tổng số tiền:</strong> ${orderDetails.orderTotal} VNĐ</p>
       
     `,
   };

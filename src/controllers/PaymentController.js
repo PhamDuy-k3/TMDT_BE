@@ -2,6 +2,8 @@ import axios from "axios";
 import crypto from "crypto";
 import mongoose from "mongoose";
 import cartOderModel from "../models/cartOder.model.js";
+import { updateDiscountCodes } from "../utils/updateDiscountCodes.js";
+import { updateProductStock } from "../utils/updateProductStock.js";
 
 export default class PaymentController {
   async create(req, res) {
@@ -15,7 +17,9 @@ export default class PaymentController {
         note,
         orderInfo,
         selectedDiscountCodes,
-        address,
+        shippingAddress,
+        deliveryMethod,
+        shippingFee,
       } = req.body;
 
       // Các thông tin từ MoMo
@@ -49,15 +53,21 @@ export default class PaymentController {
         carts,
         status: "unconfirmed",
         id_user_oder,
-        total_prices: amount,
+        orderTotal: amount,
         note: note,
         gmail,
         orderId: orderId,
         selectedDiscountCodes,
-        address,
+        shippingAddress,
+        paymentMethod: "Momo",
+        deliveryMethod,
+        shippingFee,
       };
+      const cart = await cartOderModel.create(newOrder);
+      if (!cart) throw new Error("Không thể tạo đơn hàng");
 
-      await cartOderModel.create(newOrder); // Lưu đơn hàng vào DB
+      updateDiscountCodes(selectedDiscountCodes);
+      updateProductStock(carts);
 
       // Tạo request body cho MoMo
       const requestBody = {
