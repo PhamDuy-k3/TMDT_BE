@@ -21,11 +21,13 @@ const discountcodeModel = new mongoose.Schema(
     },
     discountValue: {
       type: Number,
-      required: true,
+      required: function () {
+        return this.discountType !== "freeshipping";
+      }, // Không bắt buộc nếu là miễn phí vận chuyển
     },
     discountType: {
       type: String,
-      enum: ["fixed", "percentage"],
+      enum: ["fixed", "percentage", "freeshipping"],
       required: true,
     },
     minOrderValue: {
@@ -61,6 +63,12 @@ const discountcodeModel = new mongoose.Schema(
       type: Number,
       default: 0,
       required: true,
+    },
+    maxShippingFreeDiscount: {
+      type: Number,
+      required: function () {
+        return this.discountType === "freeshipping";
+      }, // Chỉ bắt buộc nếu là miễn phí vận chuyển
     },
   },
   {

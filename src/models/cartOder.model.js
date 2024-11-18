@@ -55,10 +55,10 @@ const cartOderModel = mongoose.Schema({
   confirmedAt: {
     type: Date,
   },
-  // address: {
-  //   type: String,
-  //   require: true,
-  // },
+  address: {
+    type: String,
+    require: true,
+  },
 });
 
 export default mongoose.model("CartOder", cartOderModel, "cartsOder");

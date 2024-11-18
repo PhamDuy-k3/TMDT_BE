@@ -15,6 +15,7 @@ export default class PaymentController {
         note,
         orderInfo,
         selectedDiscountCodes,
+        address,
       } = req.body;
 
       // Các thông tin từ MoMo
@@ -53,6 +54,7 @@ export default class PaymentController {
         gmail,
         orderId: orderId,
         selectedDiscountCodes,
+        address,
       };
 
       await cartOderModel.create(newOrder); // Lưu đơn hàng vào DB

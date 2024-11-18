@@ -22,6 +22,8 @@ router(app);
 
 app.use(express.static("storage/images"));
 app.use(express.static("storage/videos"));
+app.use(express.static("storage/logos"));
+
 
 
 io.on("connection", (socket) => {
