@@ -12,7 +12,7 @@ export default class VariantController {
           .status(400)
           .json({ error: { message: "Không thể tạo biến thể" } });
       }
-      await UpdateStockProduct(variant._id, variant.product_id, data, res);
+      await UpdateStockProduct("", variant.product_id, "", res);
       res.status(200).json(variant);
     } catch (error) {
       res.status(500).json({
