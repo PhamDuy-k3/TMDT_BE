@@ -13,6 +13,6 @@ export const discountcodeRouter = (app) => {
     discountcodeController.create
   );
   router.get("/", discountcodeController.index);
-
+  router.put("/", discountcodeController.updateStatus);
   app.use("/discountcode", router);
 };

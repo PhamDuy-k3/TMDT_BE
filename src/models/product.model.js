@@ -30,6 +30,10 @@ const productModel = mongoose.Schema(
     stock: {
       type: Number,
     },
+    soldCount: { type: Number, default: 0 },
+    
+    description: { type: String },
+
     isVisible: { type: Boolean, default: false },
     images: [
       {

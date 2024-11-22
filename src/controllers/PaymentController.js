@@ -20,15 +20,17 @@ export default class PaymentController {
         shippingAddress,
         deliveryMethod,
         shippingFee,
+        shipping_fee_new,
+        subTotal,
       } = req.body;
 
       // Các thông tin từ MoMo
       const accessKey = "F8BBA842ECF85";
       const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
       const partnerCode = "MOMO";
-      const redirectUrl = "http://localhost:3000/#/CartOder";
+      const redirectUrl = "http://localhost:3000/CartOder";
       const ipnUrl =
-        "https://d990-116-96-46-173.ngrok-free.app/payment/callBack";
+        "https://6d4b-116-96-44-242.ngrok-free.app/payment/callBack";
       const requestType = "payWithMethod";
       const orderId = partnerCode + new Date().getTime();
       const requestId = orderId;
@@ -50,25 +52,30 @@ export default class PaymentController {
         .digest("hex");
 
       const newOrder = {
-        carts,
-        status: "unconfirmed",
+        orderId,
         id_user_oder,
-        orderTotal: amount,
-        note: note,
-        gmail,
-        orderId: orderId,
+        carts,
+        subTotal, // Tổng tiền trước giảm giá
+        orderTotal: amount, // Tổng tiền cuối cùng
         selectedDiscountCodes,
+        note,
+        gmail,
         shippingAddress,
+        shippingFee,
+        shipping_fee_new,
         paymentMethod: "Momo",
         deliveryMethod,
-        shippingFee,
+        status: "unconfirmed",
       };
       const cart = await cartOderModel.create(newOrder);
       if (!cart) throw new Error("Không thể tạo đơn hàng");
 
-      updateDiscountCodes(selectedDiscountCodes);
-      updateProductStock(carts);
-
+      if (selectedDiscountCodes.length > 0) {
+        updateDiscountCodes(selectedDiscountCodes, userId);
+      }
+      if (carts.length > 0) {
+        updateProductStock(carts);
+      }
       // Tạo request body cho MoMo
       const requestBody = {
         partnerCode,
@@ -121,7 +128,6 @@ export default class PaymentController {
     try {
       // Lấy kết quả thanh toán
       const { orderId, resultCode } = req.body;
-
       // Cập nhật trạng thái đơn hàng dựa trên kết quả thanh toán
       const order = await cartOderModel.findOne({ orderId });
       if (order) {

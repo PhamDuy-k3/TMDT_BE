@@ -5,14 +5,14 @@ export const updateProductStock = async (carts) => {
   const stockUpdatePromises = carts.map(async (cart) => {
     const { product_id, quantity, size, color } = cart;
 
-    // Tìm sản phẩm và variants
+    // Tìm sản phẩm và variants theo id_product
     const product = await productModel.findById({ _id: product_id });
     const variants = await Variant.find({ product_id });
 
     if (!product) {
       throw new Error(`Sản phẩm với ID ${product_id} không tồn tại`);
     }
-
+    product.soldCount += quantity;
     let variant = null;
 
     if (size && color) {
@@ -36,7 +36,11 @@ export const updateProductStock = async (carts) => {
     await productModel.findByIdAndUpdate(
       { _id: product_id },
       {
-        $inc: { stock: -quantity }, // Giảm số lượng sản phẩm
+        $inc: {
+          // inc : tăng or giảm
+          stock: -quantity,
+          soldCount: quantity,
+        },
       },
       { new: true }
     );
@@ -44,6 +48,5 @@ export const updateProductStock = async (carts) => {
     return product;
   });
 
-  // Chờ tất cả các promise cập nhật sản phẩm hoàn tất
   await Promise.all(stockUpdatePromises);
 };

@@ -18,6 +18,7 @@ const discountcodeModel = new mongoose.Schema(
           return "http://localhost:5050/" + logoShop;
         }
       },
+      required: true,
     },
     discountValue: {
       type: Number,
@@ -45,10 +46,11 @@ const discountcodeModel = new mongoose.Schema(
     usageLimit: {
       type: Number,
       default: 1,
+      required: true,
     },
     status: {
       type: String,
-      enum: ["active", "expired", "used"],
+      enum: ["active", "expired"],
       default: "active",
     },
     createdAt: {

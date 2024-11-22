@@ -1,8 +1,8 @@
 import discountcodeModel from "../models/discountcode.model.js";
 import User_vouchers from "../models/user_voucher.model.js";
 
-export const updateDiscountCodes = async (selectedDiscountCodes) => {
-  const discountUpdatePromises = selectedDiscountCodes.map(async (code) => {
+export const updateDiscountCodes = async (discountCodes, userId) => {
+  const discountUpdatePromises = discountCodes.map(async (code) => {
     // Giảm số lượng voucher trong kho
     const discountCode = await discountcodeModel.findOne({ code });
     if (!discountCode) {
@@ -20,7 +20,7 @@ export const updateDiscountCodes = async (selectedDiscountCodes) => {
     const voucher_user = await User_vouchers.findOne({ voucher_id: _id });
     if (voucher_user && voucher_user.quantity > 0) {
       await User_vouchers.updateOne(
-        { voucher_id: _id },
+        { user_id: userId, voucher_id: _id },
         { $inc: { quantity: -1 } }
       );
     }

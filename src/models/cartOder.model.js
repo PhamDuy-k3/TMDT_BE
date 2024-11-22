@@ -19,11 +19,19 @@ const cartOderModel = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  shippingDiscount: {
+    type: Number,
+    default: 0,
+  },
   orderTotal: {
     type: Number,
     required: true,
   },
-  selectedDiscountCodes: {
+  subTotal: {
+    type: Number,
+    required: true,
+  },
+  discountCodes: {
     type: Array,
     default: [],
   },
@@ -35,7 +43,7 @@ const cartOderModel = mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ["Momo", "Thanh toán khi nhận hàng"],
+    enum: ["Momo", "COD"],
     required: true,
   },
   paymentStatus: {

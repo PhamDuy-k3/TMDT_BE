@@ -16,17 +16,22 @@ export default class CartOderController {
   async create(req, res) {
     try {
       const data = req.body;
-      if (req.authUser) {
-        data.id_user_oder = req.authUser._id.toString();
+      const userId = req.authUser?._id.toString();
+      if (userId) {
+        data.id_user_oder = userId;
       }
       // Tạo đơn hàng
       const cart = await cartOderModel.create(data);
       if (!cart) throw new Error("Không thể tạo đơn hàng");
 
-      const { carts, selectedDiscountCodes = [] } = data;
+      const { carts, discountCodes } = data;
+      if (carts.length > 0) {
+        updateProductStock(carts);
+      }
+      if (discountCodes.length > 0) {
+        updateDiscountCodes(discountCodes, userId);
+      }
 
-      await updateDiscountCodes(selectedDiscountCodes);
-      await updateProductStock(carts);
       // Trả về kết quả thành công
       res.status(201).json({
         data: cart,

@@ -15,6 +15,7 @@ export default class ProductController {
       data.images = images.map((file) => file.filename);
       data.videos = videos.map((file) => file.filename);
 
+      data.soldCount = data.stock;
       // Lưu sản phẩm vào database
       const product = await productModel.create(data);
 
@@ -64,7 +65,7 @@ export default class ProductController {
           status_code: 201,
         });
       }
-      res.json({
+      res.status(200).json({
         data: product,
         status_code: 200,
       });
@@ -85,6 +86,7 @@ export default class ProductController {
       if (videos.length > 0) {
         data.videos = videos.map((file) => file.filename);
       }
+      data.soldCount = data.stock;
       const { productId } = req.params;
       const product = await productModel.findById(productId);
       if (!product) {
