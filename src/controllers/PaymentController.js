@@ -30,7 +30,7 @@ export default class PaymentController {
       const partnerCode = "MOMO";
       const redirectUrl = "http://localhost:3000/CartOder";
       const ipnUrl =
-        "https://6d4b-116-96-44-242.ngrok-free.app/payment/callBack";
+        "https://9152-116-96-44-242.ngrok-free.app/payment/callBack";
       const requestType = "payWithMethod";
       const orderId = partnerCode + new Date().getTime();
       const requestId = orderId;
@@ -70,10 +70,10 @@ export default class PaymentController {
       const cart = await cartOderModel.create(newOrder);
       if (!cart) throw new Error("Không thể tạo đơn hàng");
 
-      if (selectedDiscountCodes.length > 0) {
+      if (selectedDiscountCodes?.length > 0) {
         updateDiscountCodes(selectedDiscountCodes, userId);
       }
-      if (carts.length > 0) {
+      if (carts?.length > 0) {
         updateProductStock(carts);
       }
       // Tạo request body cho MoMo
@@ -128,6 +128,7 @@ export default class PaymentController {
     try {
       // Lấy kết quả thanh toán
       const { orderId, resultCode } = req.body;
+      console.log(orderId, resultCode)
       // Cập nhật trạng thái đơn hàng dựa trên kết quả thanh toán
       const order = await cartOderModel.findOne({ orderId });
       if (order) {

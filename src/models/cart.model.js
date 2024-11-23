@@ -22,7 +22,7 @@ const cartModel = mongoose.Schema({
     required: true,
   },
   discount_code: {
-    type: String,
+    type: Number,
     default: "0",
   },
   quantity: {

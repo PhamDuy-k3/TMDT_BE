@@ -14,6 +14,9 @@ import { SizeRouter } from "./size.router.js";
 import { VariantRouter } from "./variant.router.js";
 import { ShippingFeeRouter } from "./shippingfee.router.js";
 import { AddressRouter } from "./address.router.js";
+import { townsRouter } from "./town.router.js";
+import { provincesRouter } from "./provinces.router.js";
+import { districtsRouter } from "./districts.router.js";
 export const router = (app) => {
   userRouter(app);
   productRouter(app);
@@ -31,4 +34,7 @@ export const router = (app) => {
   VariantRouter(app);
   ShippingFeeRouter(app);
   AddressRouter(app);
+  townsRouter(app);
+  provincesRouter(app);
+  districtsRouter(app);
 };
