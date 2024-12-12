@@ -37,7 +37,6 @@ export const updateProductStock = async (carts) => {
       { _id: product_id },
       {
         $inc: {
-          // inc : tăng or giảm
           stock: -quantity,
           soldCount: quantity,
         },

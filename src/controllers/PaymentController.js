@@ -20,7 +20,7 @@ export default class PaymentController {
         shippingAddress,
         deliveryMethod,
         shippingFee,
-        shipping_fee_new,
+        shippingDiscount,
         subTotal,
       } = req.body;
 
@@ -30,7 +30,7 @@ export default class PaymentController {
       const partnerCode = "MOMO";
       const redirectUrl = "http://localhost:3000/CartOder";
       const ipnUrl =
-        "https://9152-116-96-44-242.ngrok-free.app/payment/callBack";
+        "https://eea3-116-96-44-242.ngrok-free.app/payment/callBack";
       const requestType = "payWithMethod";
       const orderId = partnerCode + new Date().getTime();
       const requestId = orderId;
@@ -62,7 +62,7 @@ export default class PaymentController {
         gmail,
         shippingAddress,
         shippingFee,
-        shipping_fee_new,
+        shippingDiscount,
         paymentMethod: "Momo",
         deliveryMethod,
         status: "unconfirmed",
