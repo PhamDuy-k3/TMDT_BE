@@ -29,15 +29,6 @@ const userModel = mongoose.Schema(
     address: {
       type: String,
     },
-    province_id: {
-      type: mongoose.Schema.Types.Mixed, // Chấp nhận cả kiểu dữ liệu chuỗi và số
-    },
-    district_id: {
-      type: mongoose.Schema.Types.Mixed,
-    },
-    town_id: {
-      type: mongoose.Schema.Types.Mixed,
-    },
     isVerified: { type: Boolean, default: false },
     codeExpired: {
       type: Date,
