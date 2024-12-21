@@ -12,10 +12,19 @@ export default class CommentController {
       if (file) {
         data.image = file.filename;
       }
-      const discountcodes = await commentModel.create(data);
-      res.json(discountcodes);
+      const comment = await commentModel.create(data);
+      if (!comment) {
+        return res.json({
+          status_code: 400,
+          message: "Create comment fail",
+        });
+      }
+      return res.json({
+        status_code: 200,
+        data: comment,
+      });
     } catch (error) {
-      res.json({
+      res.status(400).json({
         error: {
           message: error.message,
         },

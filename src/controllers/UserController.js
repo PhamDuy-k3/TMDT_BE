@@ -127,6 +127,11 @@ export default class UserController {
       const userId = req.authUser?._id.toString();
       const userServices = new UserService();
       const user = await userServices.getById(userId);
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
       res.json({
         data: user,
       });

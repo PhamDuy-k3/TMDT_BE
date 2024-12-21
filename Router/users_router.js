@@ -9,7 +9,7 @@ export const userRouter = (app) => {
   const router = express.Router();
   const userController = new UserController();
 
-  // router.use(AuthMiddleware);
+  router.use(AuthMiddleware);
 
   router.post(
     "/",
