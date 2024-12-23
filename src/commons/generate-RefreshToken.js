@@ -3,7 +3,7 @@ import moment from "moment";
 
 export const generateRefreshToken = (
   data,
-  secretKey = process.env.ACCESS_TOKEN_SECRET
+  secretKey = process.env.REFRESH_TOKEN_SECRET
 ) => {
   const payload = {
     ...data,
@@ -13,7 +13,7 @@ export const generateRefreshToken = (
   // Tạo token với thời gian hết hạn là 1 phút
   const token = jwt.sign(payload, secretKey, {
     algorithm: "HS256",
-    expiresIn: "20d",
+    expiresIn: "2d",
   });
 
   return token;

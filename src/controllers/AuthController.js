@@ -7,8 +7,8 @@ import { UserService } from "../services/user.services.js";
 import { GenerateRandomCode } from "../utils/generateRandomCode.js";
 import dayjs from "dayjs";
 import refreshTokenModel from "../models/refreshToken.model.js";
-import { generateRefreshToken } from "../commons/generate-refreshToken.js";
 import jwt from "jsonwebtoken";
+import { generateRefreshToken } from "../commons/generate-RefreshToken.js";
 
 export default class AuthController {
   // Đăng nhập
@@ -169,7 +169,6 @@ export default class AuthController {
 
   async refreshToken(req, res) {
     const { refreshToken } = req.body;
-
     if (!refreshToken) return res.status(401).json("Refresh Token Required");
 
     jwt.verify(
@@ -185,8 +184,7 @@ export default class AuthController {
         if (!newAccessToken) {
           return res.status(500).json("Token mới tạo không thành công");
         }
-
-        return res.json({ accessToken: newAccessToken });
+        return res.json({ access_token: newAccessToken });
       }
     );
   }

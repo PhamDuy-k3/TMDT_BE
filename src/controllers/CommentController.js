@@ -49,7 +49,8 @@ export default class CommentController {
   }
   async index(req, res) {
     try {
-      const { productId, rating } = req.query;
+      const { productId, rating, limit = 2, page = 1 } = req.query;
+      const offset = (page - 1) * limit;
       const conditions = {};
       if (productId) {
         conditions.productId = productId;
@@ -60,14 +61,23 @@ export default class CommentController {
       if (rating === 0) {
         conditions.rating = { $gt: rating };
       }
-      const comments = await commentModel.find(conditions);
+      const [count, comments] = await Promise.all([
+        commentModel.countDocuments(conditions),
+        commentModel.find(conditions).limit(limit).skip(offset),
+      ]);
+
+      const pagination = Math.ceil(count / limit);
       res.json({
         data: comments,
         status_code: 200,
+        count,
+        limit: +limit,
+        page: +page,
+        pagination,
         errors: [],
       });
     } catch (error) {
-      res.json({
+      res.status(400).json({
         error: {
           message: error.message,
         },
