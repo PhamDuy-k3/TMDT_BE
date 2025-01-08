@@ -101,13 +101,17 @@ export default class CartOderController {
 
   async index(req, res) {
     try {
-      const { status, startDate, endDate } = req.query;
+      const { status, startDate, endDate, limit = 2, page = 1 } = req.query;
 
       const conditions = {};
+      let sortOption = {};
+      const offset = (page - 1) * limit;
 
       if (status) {
         conditions.status = status;
       }
+      // Sắp xếp theo ngày tạo (mới nhất đầu tiên)
+      sortOption.createdAt = -1;
       // console.log(new Date(startDate).setHours(0, 0, 0, 0))
 
       // Lọc theo khoảng thời gian
@@ -122,10 +126,24 @@ export default class CartOderController {
           $lte: new Date(startDate).setHours(23, 59, 59, 999),
         };
       }
+      const [count, carts] = await Promise.all([
+        cartOderModel.countDocuments(conditions),
+        cartOderModel
+          .find(conditions)
+          .limit(limit)
+          .skip(offset)
+          .sort(sortOption),
+        ,
+      ]);
+      const pagination = Math.ceil(count / limit);
 
-      const carts = await cartOderModel.find(conditions);
-
-      res.status(200).json({ data: carts, status_code: 200 });
+      res.status(200).json({
+        data: carts,
+        status_code: 200,
+        limit: +limit,
+        page: +page,
+        pagination,
+      });
     } catch (error) {
       console.error("Error fetching cart orders:", error);
       res.status(500).json({

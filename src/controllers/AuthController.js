@@ -176,7 +176,6 @@ export default class AuthController {
       process.env.REFRESH_TOKEN_SECRET,
       (err, payload) => {
         if (err) return res.status(403).json("Invalid Token");
-        console.log(payload);
         const newAccessToken = generateToken({
           id: payload.id,
         });
